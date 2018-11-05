@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="">
+    <script type="text/javascript" src="js/web3Functions.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.css" />
+    <script defer src="https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
+    <script
+            src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/preloader.css">
+    <script type="text/javascript" src="js/bundle.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <script src="js/socket.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+<title>SplitMeUp!</title>
+</head>
+<body>
+<section class="hero is-primary">
+    <div class="hero-body">
+        <div class="container">
+            <div class="level level-title-main-title">
+              <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+                <h1 class="title level-item" style=" font-family: Pacifico , cursive;" > Split Me Up! <span class="beta"><b> BETA</b></span></h1>
+            </div>
+            <div class="level">
+              <link href="https://fonts.googleapis.com/css?family=Satisfy" rel="stylesheet">
+                <h1 class="subtitle level-item" style="font-family: Satisfy, cursive;">The digital way to secure your private keys!!!</h1>
+            </div>
+
+            <div style="font-family: Josefin Sans ; text-align: center ; font-size: 1.5em; "><br><br>Github Link : <a href="https://github.com/pranav-singhal/ethIndiaHack">SplitMeUp</a></div>
+
+
+        </div>
+    </div>
+</section>
+<div class="column card-container-column">
+
+    <div class="level">
+      <i class="fab fa-keycdn" ></i>
+
+        <div class = "description-level-item">
+          Simply login to our app with your username and password and we will share your seed phrase with you.
+        </div>
+        <div class="level-item">
+            <a class="button is-primary main-working-button" id="recover-your-key-idd">Recover Your Key!</a>
+        </div>
+
+    </div>
+
+
+    <div class="level main-paperless-level">
+
+        <i class="fas fa-user-lock"></i>
+        <div class = "description-level-item">
+            Securely Upload your private key seed phrase to our app. We will neither store your password nor your seed phrase anywhere with us( scouts honour! ). For more information on how our software works, <i><a style="color: green;">Click here.</a></i>
+        </div>
+        <div class="level-item">
+            <a class="button is-primary main-working-button" id="login-new-user-button">Go Digital!</a>
+        </div>
+    </div>
+
+    <div class="level">
+       <i class="fab fa-connectdevelop"></i>
+        <div class = "description-level-item">
+          As a community, we rely on you to let our app grow and become more secure. So join today and start earning Dai Coin - the price stabilised cryptocurrency. All you need is an ethereum account and a telegram account. To learn more, <i><a style="color: green;">Click here.</a></i>
+        </div>
+        <div class="level-item">
+            <a class="button is-primary main-working-button" id="register-tgram-user-button">Join Our Node Network</a>
+        </div>
+
+    </div>
+</div>
+
+<div class="custom-account" id="login-new-user-modal">
+    <div class="modal-card" id="login-new-user-modal-card">
+        <!-- <header class="modal-card-head"> -->
+        <p class="modal-card-title"><b>Create an Account</b></p>
+        <hr><hr><hr>
+        <!-- <button class="delete" aria-label="close"></button> -->
+        <!-- </header> -->
+        <!-- <section class="modal-card-body"> -->
+        <div class="column" style="padding: 0">
+            <div class="field">
+                <label class="label">Username</label>
+                <div class="control">
+                    <input class="input" type="text" id="username" placeholder="Text input">
+                    <span class="help is-warning">Remember this username</span>
+                </div>
+
+            </div>
+            <div class="field">
+                <label class='label'>Password</label>
+                <div class="control">
+                    <input class='input' id="password" type="password" placeholder="Create new password">
+                    <span class="help is-warning">We will use this password to encrypt your seed phrase, so choose it wisely!</span>
+                    <span class="help is-warning">Relax we at split me up dont save this password anywhere</span>
+                </div>
+            </div>
+            <div class="field">
+                <label class='label'>Confirm Password</label>
+                <div class="control">
+                    <input class='input' type="password" placeholder="Confirm password">
+                </div>
+            </div>
+        </div>
+        <!-- </section> -->
+        <!-- <footer class="modal-card-foot"> -->
+        <br>
+        <footer class="footer-button">
+            <button class="button is-success" id="create-account">Create Account</button>
+            <button class="button close-modal" >Cancel</button>
+        </footer>
+    </div>
+    <div class="modal-card hide" id="enter-seed-phrase">
+        <!-- <header class="modal-card-head"> -->
+        <p class="modal-card-title"><b>Let the Splitting Begin</b></p>
+        <hr><hr><hr>
+        <!-- <button class="delete" aria-label="close"></button> -->
+        <!-- </header> -->
+        <!-- <section class="modal-card-body"> -->
+        <div class="column">
+            <h3 class="subtitle"><b>Enter Your seed Phrase</b></h3>
+            <p class="is-size-6	"> Enter the seed phrase that you use to generate your private key...
+                Don't worry, we at 'Split me Up' promise not to see or store your key or the password
+                you just entered anywhere with us.(You can check you terms and agreement and the code on
+                our app.)
+            </p>
+            <br>
+
+
+            <textarea class="textarea" name="name" id="seed-phrase" placeholder="Enter Seed Phrase" value=" "></textarea>
+            <br>
+            <button class="button is-success" id="create-piece-button">Create Pieces!</button>
+
+
+
+
+
+
+        </div>
+        <!-- </section> -->
+    </div>
+
+
+    <div class="model-for-result">
+        <div class="wait-request">
+        </div>
+
+        <div class="preloader loading hide">
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="custom-account-become-a-part" id="tgram-register-modal">
+    <div class="modal-card" id="tgram-register-modal-card">
+        <!-- <header class="modal-card-head"> -->
+        <p class="modal-card-title"><b>Join Our Node Network</b></p>
+        <hr><hr><hr>
+        <br>
+        <!-- </header> -->
+        <!-- <section class="modal-card-body"> -->
+
+        <span>
+
+            While we are in beta, we are using the Telegram bot to build our network of nodes. You can learn more about Telegram  <i><a href="https://telegram.org/faq#q-what-is-telegram-what-do-i-do-here">here.</a></i>
+            <br>
+            All you need to do is click on the link provided below and verify your registration with the OTP we will send you on your account. Once your are connected, we will start sending you simple messages that contain key shares of our clients. When we request you, simply send the correct key share and we will pay you a reward for every correct request completed.
+            <br>
+          <i>
+          Remember, that as the network grows, more and more people will be rushing for the same reward and we only pay the first responders, so be quick and we thank you on the behalf of the entire Split Me Up community !
+        </i>
+
+        </span>
+        <br>
+      <span><b>Connect to the network : </b><span><a href="http://telegram.me/BabyGotHack_Bot" target="_blank" id="tgram-link"> <i>@SplitMeUp</i> </a></span></span>
+
+        <div class="field hide" id="tgram-otp-field">
+            <br>
+            <label class="label">Otp</label>
+            <div class="control">
+                <input class="input" type="number" id="otp" placeholder="Enter OTP"><br>
+                <br>
+                <button class="button is-success" id="verify-otp-button">Verify OTP</button>
+                <br>
+
+            </div>
+
+        </div>
+
+        <!-- </section> -->
+    </div>
+
+
+
+</div>
+
+
+<div class="recover-card">
+
+    <div class="recover-your-key modal-card">
+        <h1><b>Recover Your Key</b></h1><hr><hr><hr>
+        <br>
+        <label class="label">Username</label>
+        <input class="input" id="account_recover_name" placeholder="Enter Username">
+        <label class="label">Password</label>
+        <input class="input" id="account_recover_password" placeholder="Enter Password">
+        <br>
+        <br>
+        <button id="recover-button">Recover Key</button>
+
+
+    </div>
+
+    <div class="model-for-result">
+        <div class="wait-request">
+            Your request is under Process . Please wait until we receive all the shares from the nodes. <br> This process might take some time.
+        </div>
+
+        <div class="preloader loading hide">
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+        </div>
+    </div>
+
+</div>
+
+</body>
+<script type="text/javascript">
+    password ='';
+    username = '';
+
+    $(function(){
+        console.log("document ready");
+
+        $('#recover-your-key-idd').click(function(){
+            $('.recover-your-key')[0].style.display = "block" ;
+        });
+
+        $('#login-new-user-button').click(function(){
+            $('#login-new-user-modal').addClass('is-active');
+            $('.custom-account')[0].style.display = "block";
+
+        });
+        $('.main-working-button').click(function(){
+            $('.card-container-column')[0].style.display = "none";
+        });
+
+
+        $('.delete').click(function(){
+
+            $('#login-new-user-modal').removeClass('is-active');
+            $('.card-container-column')[0].style.display = "";
+
+        })
+        $('.close-modal').click(function(){
+            $('#login-new-user-modal').removeClass('is-active');
+            $('.card-container-column')[0].style.display = "";
+
+        })
+        $('#register-tgram-user-button').click(function(){
+            $('#tgram-register-modal').addClass('is-active');
+            $('.custom-account-become-a-part')[0].style.display = "block" ;
+        });
+    })
+    $('#tgram-link').click(function(){
+        $('#tgram-otp-field').removeClass('hide');
+
+
+    });
+    $('#verify-otp-button').click(function(){
+        let otp = $('#otp').val();
+        sendOTP(otp,function(chatID){
+
+          $("#verify-otp-button").attr('disabled','disabled');
+          $("#verify-otp-button").html('Verified');
+
+
+            addTelegramUserToContract(chatID,function(bool){
+                if(bool){
+                    sendWelcomeMessage(chatID, function () {
+                        console.log("chatid saved to contract");
+                        $("#verify-otp-button").attr('disabled','disabled');
+
+                    });
+                }
+
+            });
+        });
+
+    })
+    $('#create-account').click(function(){
+        username = $('#username').val();
+        data ={
+            username: username
+        }
+        // send username to backend code goes here
+        password = $('#password').val();
+        $('#login-new-user-modal-card').addClass('hide');
+        $('#enter-seed-phrase').removeClass('hide');
+    })
+    $('#create-piece-button').click(function(){
+
+        $(".model-for-result")[0].style.display = "flex";
+        $('.preloader').removeClass('hide');
+        $(this).attr('disabled','disabled');
+        $('#seed-phrase').attr('disabled','disabled');
+        $(this).html('Encrypting your key...');
+        var seed_phrase = $('#seed-phrase').val();
+        sendShardsThroughSocket(username, password, seed_phrase)
+            .then(function () {
+                $("#create-piece-button").html('Sending your Key to Users...');
+
+                setTimeout(function () {
+                    $("#create-piece-button").html('Completed');
+                    $(".wait-request").html('Your Shares Have Been Distributed Over The Network');
+                }, 5000);
+
+                $('.preloader').removeClass('hide');
+
+            });
+    });
+
+    $('#recover-button').click(function () {
+        let pass = $('#account_recover_password').val();
+        let user = $('#account_recover_name').val();
+        console.log(user, pass);
+        $(".model-for-result")[1].style.display = "flex";
+        $('.preloader').removeClass('hide');
+        retreiveShares(user, pass);
+
+
+    });
+
+
+    window.remove_modal = function(seed_phrase)
+    {
+        $(".wait-request").html("Your Seed Phrase <br>" + seed_phrase);
+        $('.preloader').addClass('hide');
+
+    }
+
+
+
+</script>
+
+<style media="screen">
+
+    html , body {
+        min-height: 100vh;
+        height: auto;
+        font-family: 'Josefin Sans', sans-serif;
+
+    }
+
+    .title
+    {
+      font-weight: bold;
+      font-size: 2.5em;
+    }
+
+    .subtitle
+    {
+      font-size: 1.8em;
+      font-weight: bold;
+    }
+
+    .hide{
+        display: none !important;
+    }
+
+    .card-container-column
+    {
+        padding-top: 30px ;
+        padding-bottom: 30px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+    .card-container-column .level
+    {
+        width: 25vw;
+        height: 35vw;
+        border-radius: 4px;
+        background: #8de5d1;
+        box-sizing: border-box;
+        padding: 1em;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        margin: 0px;
+
+    }
+
+    .is-warning{
+        color: red !important;
+    }
+    .card-container-column .level .description-level-item
+    {
+        font-size: 1.3em;
+        color: white;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .card-container-column .level .level-item
+    {
+        flex-grow: 0 ;
+    }
+
+
+    .recover-card
+    {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .card-container-column .main-paperless-level
+    {
+        width: 30vw ;
+        height: 40vw;
+        background-color: #2cd8bc ;
+        font-size: 1em;
+
+    }
+
+
+
+    .recover-your-key , .custom-account , .custom-account-become-a-part
+    {
+        display: none ;
+        padding: 20px;
+        margin: 10px;
+
+
+
+    }
+
+    .recover-your-key h1{
+        font-size: 1.5em;
+    }
+
+    .custom-account-become-a-part hr
+    {
+        margin-top: 2px;
+        margin-bottom: 2px;
+
+    }
+
+    .recover-your-key hr{
+
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+
+    .recover-your-key label
+    {
+        margin-top: 5px;
+    }
+
+    #recover-button
+    {
+        padding: 10px;
+        border-radius: 4px;
+        background-color: #00d1b2;
+        border: 1px solid #00d1b2 ;
+        color: white;
+        font-size: 1.0em;
+    }
+
+
+    .modal-card hr
+    {
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+
+
+
+    @media only screen and (max-width: 800px)
+    {
+        body
+        {
+        }
+        .card-container-column
+        {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card-container-column .level
+        {
+            margin-top: 20px;
+            width: 75vw;
+            height: auto;
+        }
+
+
+
+        .card-container-column
+        {
+            align-items: center;
+        }
+
+        .beta
+        {
+          right: 155px ;
+        }
+    }
+
+
+
+
+    .model-for-result
+    {
+        display: none;
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 2em;
+
+        justify-content: space-around;
+        align-items: center;
+
+        color: white;
+        background-color: rgba(0,0,0,0.70);
+        padding: 20px;
+    }
+
+    .model-for-result .preloader
+    {
+        top: 65%;
+    }
+
+    .fa-keycdn , .fa-user-lock , .fa-connectdevelop
+    {
+      font-size: 3em  !important;
+      color: rgba(49 , 103 , 113 , 0.44) !important ;
+    }
+
+
+    .level-title-main-title
+    {
+      position: relative;
+    }
+
+    .beta
+    {
+      font-family: monospace !important;
+      font-size: 0.3em;
+      margin: 8px;
+      border: 1px solid inherit;
+      background-color: rgba(0 , 146 , 141 , 0.48);
+      padding: 3px;
+      border-radius: 4px;
+      position: absolute;
+      bottom: 15px;
+      right: 407px;
+
+    }
+
+
+
+
+</style>
+</html>

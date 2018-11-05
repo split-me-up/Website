@@ -1,0 +1,8 @@
+node_modules/
+yarn.lock
+.idea/
+*.pages
+iochat/js/bundle.js
+public_static/js/bundle.js
+.DS_Store
+package-lock.json
