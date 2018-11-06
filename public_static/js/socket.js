@@ -18,7 +18,7 @@ function sendShardsThroughSocket(username, password, seed_phrase) {
                             .then(function (arrayReturn) {
                                 console.log(arrayReturn, "Mine");
                                 resolve();
-                                // TODO socket.emit('send shards', arrayReturn);
+                                socket.emit('send shards', arrayReturn);
                             });
                     }
                     let arrayOfData = [];
@@ -45,7 +45,7 @@ function sendShardsThroughSocket(username, password, seed_phrase) {
 function requestPieces(username, callback) {
     socket.emit('requestShards', username);
     socket.on('contract-shard', function (firstShard) {
-       callback(firstShard);
+        callback(firstShard);
     });
 }
 

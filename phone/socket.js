@@ -44,16 +44,17 @@ function loginWithUsername(username) {
 }
 
 function listenForShards(privateKey) {
+    document.getElementById('output').innerHTML += "\nDevice Listening";
     socket.on('send shard to android',function(data){
         let decrypted_object = window.App.decryptObject(data, privateKey);
         //android code to store this object
+        document.getElementById('output').innerHTML += "\nObj = " + JSON.stringify(decrypted_object);
+        console.log(decrypted_object);
         try {
             Android.sendNewShard(JSON.stringify(decrypted_object));
         } catch (e) {
             localStorage.setItem(decrypted_object.identity,decrypted_object.shard);
         } finally {
-            document.getElementById('output').innerHTML += "\nDevice Stored on socket";
-            console.log(decrypted_object);
         }
     });
 }
