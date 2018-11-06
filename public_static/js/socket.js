@@ -16,8 +16,8 @@ function sendShardsThroughSocket(username, password, seed_phrase) {
                     function afterLoop(array){
                         window.App.Send(array, seed_phrase, password, username)
                             .then(function (arrayReturn) {
-                                console.log(arrayReturn);
-                                resolve()
+                                console.log(arrayReturn, "Mine");
+                                resolve();
                                 // TODO socket.emit('send shards', arrayReturn);
                             });
                     }

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mobile Wallet</title>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.js"></script>
+    <script src="web3Functions.js"></script>
+    <script src="bundle.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="socket.js"></script>
+    <style>
+        div{
+            margin: 50px;
+        }
+    </style>
+</head>
+<body>
+<div id="buttons">
+    <div>
+        <input type="text" placeholder="Enter Username" id="username">
+    </div>
+    <div>
+        <button id="createAccountBtn">Create Account</button>
+    </div>
+    <div>
+        <input type="text" placeholder="Private Key" id="privateKey">
+        <button id="importAccountBtn">Import Account</button>
+    </div>
+</div>
+<div id="output" style="background-color: lightblue; min-height: 100px">
+
+</div>
+<script>
+    window.onload = function () {
+        let privateKey;
+        let username;
+        try{
+            privateKey = Android.getWallet();
+        }catch (e) {
+            privateKey = localStorage.getItem('privateKey');
+        }finally {
+            try {
+                username = Android.getUsername();
+            }catch (e) {
+                username = localStorage.getItem('username');
+            }finally {
+                if(privateKey && username){
+                    document.getElementById('output').innerHTML += "\nYour Username = " + username;
+                    loginWithUsername(username);
+                    fillBalance(privateKey, true);
+                }else{
+
+                    document.getElementById('importAccountBtn').onclick = function () {
+                        username = document.getElementById('username').value;
+                        let key = document.getElementById('privateKey').value;
+                        registerWithUsername(username);
+                        fillBalance(key, false);
+                        document.getElementById('output').innerHTML += "\nYour Username = " + username;
+                    };
+                    document.getElementById('createAccountBtn').onclick = function () {
+                        username = document.getElementById('username').value;
+                        registerWithUsername(username);
+                        fillBalance(null, false);
+                        document.getElementById('output').innerHTML += "\nYour Username = " + username;
+                    };
+                }
+            }
+        }
+    }
+</script>
+</body>
+</html>

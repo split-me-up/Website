@@ -13,7 +13,7 @@
   },
   "scripts": {
     "build-web": "browserify WebIndex.js -o public_static/js/bundle.js",
-    "build-phone": "browserify PhoneIndex.js -o iochat/js/bundle.js",
+    "build-phone": "browserify PhoneIndex.js -o phone/bundle.js",
     "start": "nodemon server.js"
   }
 }
