@@ -4,7 +4,7 @@ function selectUsersFromPassword(password, count) {
     return new Promise(function (resolve, reject) {
         resolve([0, 1, 2]);
     });
-};
+}
 
 function sendShardsThroughSocket(username, password, seed_phrase) {
     return new Promise(function (resolve, reject) {
