@@ -45,7 +45,6 @@ io.on('connection', function(socket){
     });
 
     socket.on('setNewDevice',function(data){
-        console.log("setNewDevice");
         nodes.push({clientId: data.clientId, socket: socket});
         mongo.addAndroidUser(data.clientId,"",data.publicKey);
         console.log(data.clientId, 'logged in successfully');
@@ -56,7 +55,8 @@ io.on('connection', function(socket){
     socket.on('login user',function(data){
         nodes.push({clientId: data.clientId, socket: socket});
         console.log(data.clientId, 'logged in successfully');
-        console.log(socket.id);
+        console.log(data.clientId, 'logged in successfully');
+        console.log(nodes.length);
         workOnDisconnect(socket);
     });
 

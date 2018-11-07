@@ -17,18 +17,18 @@
     <script src="js/socket.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
-<title>SplitMeUp!</title>
+    <title>SplitMeUp!</title>
 </head>
 <body>
 <section class="hero is-primary">
     <div class="hero-body">
         <div class="container">
             <div class="level level-title-main-title">
-              <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+                <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
                 <h1 class="title level-item" style=" font-family: Pacifico , cursive;" > Split Me Up! <span class="beta"><b> BETA</b></span></h1>
             </div>
             <div class="level">
-              <link href="https://fonts.googleapis.com/css?family=Satisfy" rel="stylesheet">
+                <link href="https://fonts.googleapis.com/css?family=Satisfy" rel="stylesheet">
                 <h1 class="subtitle level-item" style="font-family: Satisfy, cursive;">The digital way to secure your private keys!!!</h1>
             </div>
 
@@ -41,10 +41,10 @@
 <div class="column card-container-column">
 
     <div class="level">
-      <i class="fab fa-keycdn" ></i>
+        <i class="fab fa-keycdn" ></i>
 
         <div class = "description-level-item">
-          Simply login to our app with your username and password and we will share your seed phrase with you.
+            Simply login to our app with your username and password and we will share your seed phrase with you.
         </div>
         <div class="level-item">
             <a class="button is-primary main-working-button" id="recover-your-key-idd">Recover Your Key!</a>
@@ -65,9 +65,9 @@
     </div>
 
     <div class="level">
-       <i class="fab fa-connectdevelop"></i>
+        <i class="fab fa-connectdevelop"></i>
         <div class = "description-level-item">
-          As a community, we rely on you to let our app grow and become more secure. So join today and start earning Dai Coin - the price stabilised cryptocurrency. All you need is an ethereum account and a telegram account. To learn more, <i><a style="color: green;">Click here.</a></i>
+            As a community, we rely on you to let our app grow and become more secure. So join today and start earning Dai Coin - the price stabilised cryptocurrency. All you need is an ethereum account and a telegram account. To learn more, <i><a style="color: green;">Click here.</a></i>
         </div>
         <div class="level-item">
             <a class="button is-primary main-working-button" id="register-tgram-user-button">Join Our Node Network</a>
@@ -186,7 +186,7 @@
 
         </span>
         <br>
-      <span><b>Connect to the network : </b><span><a href="http://telegram.me/BabyGotHack_Bot" target="_blank" id="tgram-link"> <i>@SplitMeUp</i> </a></span></span>
+        <span><b>Connect to the network : </b><span><a href="http://telegram.me/BabyGotHack_Bot" target="_blank" id="tgram-link"> <i>@SplitMeUp</i> </a></span></span>
 
         <div class="field hide" id="tgram-otp-field">
             <br>
@@ -289,8 +289,8 @@
         let otp = $('#otp').val();
         sendOTP(otp,function(chatID){
 
-          $("#verify-otp-button").attr('disabled','disabled');
-          $("#verify-otp-button").html('Verified');
+            $("#verify-otp-button").attr('disabled','disabled');
+            $("#verify-otp-button").html('Verified');
 
 
             addTelegramUserToContract(chatID,function(bool){
@@ -344,7 +344,11 @@
         console.log(user, pass);
         $(".model-for-result")[1].style.display = "flex";
         $('.preloader').removeClass('hide');
-        retreiveShares(user, pass);
+        requestShardsThroughSocket(user, pass)
+            .then(function (seed_phrase) {
+                $(".wait-request").html("Your Seed Phrase <br>" + seed_phrase);
+                $('.preloader').addClass('hide');
+            });
 
 
     });
@@ -352,8 +356,6 @@
 
     window.remove_modal = function(seed_phrase)
     {
-        $(".wait-request").html("Your Seed Phrase <br>" + seed_phrase);
-        $('.preloader').addClass('hide');
 
     }
 
@@ -372,14 +374,14 @@
 
     .title
     {
-      font-weight: bold;
-      font-size: 2.5em;
+        font-weight: bold;
+        font-size: 2.5em;
     }
 
     .subtitle
     {
-      font-size: 1.8em;
-      font-weight: bold;
+        font-size: 1.8em;
+        font-weight: bold;
     }
 
     .hide{
@@ -522,7 +524,7 @@
 
         .beta
         {
-          right: 155px ;
+            right: 155px ;
         }
     }
 
@@ -556,28 +558,28 @@
 
     .fa-keycdn , .fa-user-lock , .fa-connectdevelop
     {
-      font-size: 3em  !important;
-      color: rgba(49 , 103 , 113 , 0.44) !important ;
+        font-size: 3em  !important;
+        color: rgba(49 , 103 , 113 , 0.44) !important ;
     }
 
 
     .level-title-main-title
     {
-      position: relative;
+        position: relative;
     }
 
     .beta
     {
-      font-family: monospace !important;
-      font-size: 0.3em;
-      margin: 8px;
-      border: 1px solid inherit;
-      background-color: rgba(0 , 146 , 141 , 0.48);
-      padding: 3px;
-      border-radius: 4px;
-      position: absolute;
-      bottom: 15px;
-      right: 407px;
+        font-family: monospace !important;
+        font-size: 0.3em;
+        margin: 8px;
+        border: 1px solid inherit;
+        background-color: rgba(0 , 146 , 141 , 0.48);
+        padding: 3px;
+        border-radius: 4px;
+        position: absolute;
+        bottom: 15px;
+        right: 407px;
 
     }
 

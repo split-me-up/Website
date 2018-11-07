@@ -20,6 +20,7 @@ function registerWithUsername(username) {
                 let publicKey = window.App.publicKeyString(pvtKey);
                 socket.emit('setNewDevice',{clientId: username, publicKey: publicKey});
                 listenForShards(pvtKey);
+                waitForRequest(pvtKey, username);
                 document.getElementById('output').innerHTML += "\nDevice Stored on socket";
             }
 
@@ -39,6 +40,7 @@ function loginWithUsername(username) {
         let publicKey = window.App.publicKeyString(PVTKEY);
         socket.emit('login user',{clientId: username, publicKey: publicKey});
         listenForShards(PVTKEY);
+        waitForRequest(PVTKEY, username);
         document.getElementById('output').innerHTML += "\nDevice Stored on socket";
     }
 }
@@ -57,4 +59,26 @@ function listenForShards(privateKey) {
         } finally {
         }
     });
+}
+
+function waitForRequest(privateKey, username) {
+    socket.on('request shard from android',function(data){
+        let decrypted_object = window.App.decryptObject(data, privateKey);
+        console.log('decrypted_object', decrypted_object);
+        let shardToBeSent;
+        try {
+            shardToBeSent = Android.requestForShard(decrypted_object.key)
+        } catch (e) {
+            shardToBeSent =  localStorage.getItem(decrypted_object.key);
+        } finally {
+            let user_to_be_sent = decrypted_object.username;
+            let object_to_be_sent ={
+                userSending: username,
+                shard: shardToBeSent
+            };
+            let encrypted_object = window.App.encryptShardToSendIt(object_to_be_sent, decrypted_object.publicKey);
+            console.log(encrypted_object);
+            socket.emit('send shard to user',{user_to_be_sent: user_to_be_sent, encrypted_object: encrypted_object});
+        }
+    })
 }
