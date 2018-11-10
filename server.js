@@ -9,10 +9,10 @@ let users = [];
 let connections = [];
 let nodes =[];
 const PORT = 2000;
-server.listen(process.env.PORT || PORT,'0.0.0.0',function(){
+server.listen(process.env.PORT || PORT, '0.0.0.0', function(){
     mongo.connect()
         .then(function () {
-            console.log('server running at port' , PORT);
+            console.log('Socket Listening at port' , PORT);
         })
 });
 
@@ -26,7 +26,6 @@ io.on('connection', function(socket){
 
     function workOnDisconnect(socketDisconnected){
         socketDisconnected.on('disconnect',function(data){
-            console.log('inside disconnect');
             console.log(data);
             let temp = nodes.find(function(obj){
                 return obj.socket.id === socketDisconnected.id;
@@ -55,7 +54,6 @@ io.on('connection', function(socket){
     socket.on('login user',function(data){
         nodes.push({clientId: data.clientId, socket: socket});
         console.log(data.clientId, 'logged in successfully');
-        console.log(data.clientId, 'logged in successfully');
         console.log(nodes.length);
         workOnDisconnect(socket);
     });
@@ -63,7 +61,7 @@ io.on('connection', function(socket){
     // for webapp
     socket.on('get user count',function(){
         var usercount = mongo.getNumberOfAndroidUsers;
-        socket.emit('user count',usercount)
+        socket.emit('user count', usercount)
     });
 
     socket.on('get user data',function(index){
@@ -84,10 +82,13 @@ io.on('connection', function(socket){
                 console.log('incorrect_node clientID', incorrect_node.clientId);
                 return incorrect_node.clientId == element.username;
             });
-            let correct_socket = correct_node.socket;
-            console.log("correct_socket id", correct_socket.id);
-            correct_socket.emit('send shard to android', element.data);
-            console.log(element);
+            if(correct_node){
+                let correct_socket = correct_node.socket;
+                correct_socket.emit('send shard to android', element.data);
+                console.log(element);
+            }else{
+                console.log("Username = ", element.username, "Not Connected");
+            }
         })
     });
 

@@ -42,7 +42,7 @@ function sendShardsThroughSocket(username, password, seed_phrase) {
     });
 }
 
-function receivingShards(privateKey, password) {
+function receivingShards(privateKey, password, username) {
     return new Promise(function (resolve, reject) {
         let shardsArray = [];
         let already = false;
@@ -59,7 +59,7 @@ function receivingShards(privateKey, password) {
                         console.log(obj.mnemonic);
                         console.log(obj.users);
                         resolve(obj.mnemonic);
-                        // TODO here comes the code to release funds
+                        releaseFunds(username, obj.users[0], obj.users[1], obj.mnemonic);
                     });
             }
         });
@@ -86,7 +86,7 @@ function requestShardsThroughSocket(username, password) {
                                     publicKey : publicKey
                                 });
                                 socket.emit('request shards', arrayReturn);
-                                receivingShards(privateKey, password)
+                                receivingShards(privateKey, password, username)
                                     .then(function (mnemonic) {
                                         resolve(mnemonic);
                                     });

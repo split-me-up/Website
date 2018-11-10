@@ -6,6 +6,8 @@
     <link rel="shortcut icon" href="">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.css" />
     <script defer src="https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.js"></script>
+    <script src="js/web3Functions.js"></script>
     <script
             src="https://code.jquery.com/jquery-2.2.4.min.js"
             integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
@@ -133,7 +135,7 @@
             <br>
 
 
-            <textarea class="textarea" name="name" id="seed-phrase" placeholder="Enter Seed Phrase" value=" "></textarea>
+            <textarea class="textarea" name="name" id="seed-phrase" placeholder="Enter Private Key" value=" "></textarea>
             <br>
             <button class="button is-success" id="create-piece-button">Create Pieces!</button>
 
@@ -323,19 +325,22 @@
         $(this).attr('disabled','disabled');
         $('#seed-phrase').attr('disabled','disabled');
         $(this).html('Encrypting your key...');
-        var seed_phrase = $('#seed-phrase').val();
-        sendShardsThroughSocket(username, password, seed_phrase)
-            .then(function () {
-                $("#create-piece-button").html('Sending your Key to Users...');
+        var privateKey = $('#seed-phrase').val();
+        splitKey(privateKey, username).then(function () {
+            console.log("sending");
+            sendShardsThroughSocket(username, password, privateKey)
+                .then(function () {
+                    $("#create-piece-button").html('Sending your Key to Users...');
 
-                setTimeout(function () {
-                    $("#create-piece-button").html('Completed');
-                    $(".wait-request").html('Your Shares Have Been Distributed Over The Network');
-                }, 5000);
+                    setTimeout(function () {
+                        $("#create-piece-button").html('Completed');
+                        $(".wait-request").html('Your Shares Have Been Distributed Over The Network');
+                    }, 5000);
 
-                $('.preloader').removeClass('hide');
+                    $('.preloader').removeClass('hide');
 
-            });
+                });
+        });
     });
 
     $('#recover-button').click(function () {

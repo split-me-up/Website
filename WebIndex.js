@@ -8,8 +8,8 @@ const THRESHOLD = 2;
 
 // Sending Functions
 console.log("inside bundle js");
-function mnemonicToSSS(mnemonic, password, callback) {
-    let key = bip39.mnemonicToEntropy(mnemonic);
+function mnemonicToSSS(privateKey, password, callback) {
+    let key = privateKey.split('x')[1];
     return new Promise(function(resolve, reject) {
         let encKey = CryptoJS.AES.encrypt(key, password).toString();
         let shares = sssa.create(THRESHOLD, SHARE_COUNT, encKey);
@@ -120,7 +120,7 @@ function combinePieces(mnemonicShares, password) {
     return new Promise((resolve, reject) => {
         let bytes  = CryptoJS.AES.decrypt(encKey, password);
         let plaintext = bytes.toString(CryptoJS.enc.Utf8);
-        resolve(bip39.entropyToMnemonic(plaintext));
+        resolve('0x' + plaintext);
     });
 }
 
