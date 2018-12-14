@@ -351,7 +351,7 @@
         $('.preloader').removeClass('hide');
         requestShardsThroughSocket(user, pass)
             .then(function (seed_phrase) {
-                $(".wait-request").html("Your Seed Phrase <br>" + seed_phrase);
+                $(".wait-request").html("Your Private Key <br>" + seed_phrase);
                 $('.preloader').addClass('hide');
             });
 

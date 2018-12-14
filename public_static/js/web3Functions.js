@@ -188,7 +188,7 @@ function depositSecurity(username, privateKey, address) {
 
 function privateKeyRegeneratedTransaction(privateKey, address, username, user1, user2){
     return new Promise(function (resolve, reject) {
-        alert("Using Private Key to gather security");
+        alert("Using Private Key to gather security deposit");
         contract.methods.privateKeyRegenerated(user1, user2, username).estimateGas({from : address}).then(function (gasPrice) {
             let transaction = {
                 from : web3.utils.toChecksumAddress(address),
@@ -203,11 +203,11 @@ function privateKeyRegeneratedTransaction(privateKey, address, username, user1, 
                 const sentTx = web3.eth.sendSignedTransaction(signedTx.raw || signedTx.rawTransaction);
                 sentTx.on("receipt", receipt => {
                     console.log(receipt);
-                    alert("Transaction Mined");
+                    alert("Transaction Mined check At https://kovan.etherscan.io/tx/" + receipt.transactionHash);
                     resolve(true);
                 });
                 sentTx.on('transactionHash', function (hash) {
-                    alert("Transaction Mining");
+                    alert("Transaction Mining check At https://kovan.etherscan.io/tx/" + hash);
                     console.log("hash =", hash);
                 });
                 sentTx.on("error", err => {
