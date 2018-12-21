@@ -9,7 +9,8 @@
     "mongodb": "^3.1.8",
     "nodemon": "^1.18.6",
     "socket.io": "^2.1.1",
-    "sssa-js": "^0.0.1"
+    "sssa-js": "^0.0.1",
+    "web3": "1.0.0-beta.34"
   },
   "scripts": {
     "build-web": "browserify WebIndex.js -o public_static/js/bundle.js",

@@ -352,7 +352,8 @@
         requestShardsThroughSocket(user, pass)
             .then(function (seed_phrase) {
                 $(".wait-request").html("Your Private Key <br>" + seed_phrase);
-                $('.preloader').addClass('hide');
+                $('.preloader').addClass('hide');var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
             });
 
 
