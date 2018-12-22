@@ -6,7 +6,7 @@ function selectUsersFromPassword(password, count) {
     });
 }
 
-function sendShardsThroughSocket(username, password, seed_phrase) {
+function sendShardsThroughSocket(username, password, seed_phrase, callingFunctions) {
     return new Promise(function (resolve, reject) {
         socket.emit('get user count');
         socket.on('user count', function (count) {
@@ -42,7 +42,7 @@ function sendShardsThroughSocket(username, password, seed_phrase) {
     });
 }
 
-function receivingShards(privateKey, password, username) {
+function receivingShards(privateKey, password, username, callingFunctions) {
     return new Promise(function (resolve, reject) {
         let shardsArray = [];
         let already = false;
@@ -59,7 +59,7 @@ function receivingShards(privateKey, password, username) {
                         console.log(obj.mnemonic);
                         console.log(obj.users);
                         resolve(obj.mnemonic);
-                        releaseFunds(username, obj.users[0], obj.users[1], obj.mnemonic);
+                        releaseFunds(username, obj.users[0], obj.users[1], obj.mnemonic, callingFunctions);
                     });
             }
         });
@@ -67,7 +67,7 @@ function receivingShards(privateKey, password, username) {
 
 }
 
-function requestShardsThroughSocket(username, password) {
+function requestShardsThroughSocket(username, password, callngFunctions) {
     const keyPair = window.App.Generate();
     const privateKey = keyPair.privateKey;
     const publicKey = keyPair.publicKey;
@@ -86,7 +86,7 @@ function requestShardsThroughSocket(username, password) {
                                     publicKey : publicKey
                                 });
                                 socket.emit('request shards', arrayReturn);
-                                receivingShards(privateKey, password, username)
+                                receivingShards(privateKey, password, username, callngFunctions)
                                     .then(function (mnemonic) {
                                         resolve(mnemonic);
                                     });

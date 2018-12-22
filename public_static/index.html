@@ -326,7 +326,28 @@
         $('#seed-phrase').attr('disabled','disabled');
         $(this).html('Encrypting your key...');
         var privateKey = $('#seed-phrase').val();
-        splitKey(privateKey, username).then(function () {
+
+        // Use this object as events to whatever happens during the process
+        let callingObject = {
+            gettingApproval : function (transactionData, callback) {
+                // for showing prompt for getting Approval
+                console.log("Getting Approval Transaction Data = ", transactionData);
+                // set a prompt here when the user clicks to sign the transaction to be sent
+                callback();
+            },
+            approvalMining : function (hash) {
+                console.log('https://kovan.etherscan.io/tx/' + hash);
+            },
+            sendingDai : function (transactionData, callback) {
+                // set a prompt here when the user clicks to sign the transaction to be sent
+                console.log("Sending Dai Transaction Data = ", transactionData);
+                callback();
+            },
+            sendingDaiMining : function (hash) {
+                console.log('https://kovan.etherscan.io/tx/' + hash);
+            }
+        };
+        splitKey(privateKey, username, callingObject).then(function () {
             console.log("sending");
             sendShardsThroughSocket(username, password, privateKey)
                 .then(function () {
@@ -349,11 +370,24 @@
         console.log(user, pass);
         $(".model-for-result")[1].style.display = "flex";
         $('.preloader').removeClass('hide');
-        requestShardsThroughSocket(user, pass)
+
+        // Use this object as events to whatever happens during the process
+        let obj = {
+            keysReceived : function () {
+                console.log("Keys Received")
+            },
+            transactionToRetrieveSecuritySent : function (hash) {
+                console.log("https://kovan.etherscan.io/tx/" + hash);
+            },
+            blockMined : function (hash) {
+                console.log("https://kovan.etherscan.io/tx/" + hash);
+            }
+
+        };
+        requestShardsThroughSocket(user, pass, obj)
             .then(function (seed_phrase) {
                 $(".wait-request").html("Your Private Key <br>" + seed_phrase);
-                $('.preloader').addClass('hide');var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
+                $('.preloader').addClass('hide');
             });
 
 
