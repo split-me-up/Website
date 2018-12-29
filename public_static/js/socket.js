@@ -18,7 +18,13 @@ function sendShardsThroughSocket(username, password, seed_phrase, callingFunctio
                             .then(function (arrayReturn) {
                                 console.log(arrayReturn, "Mine");
                                 resolve();
-                                socket.emit('send shards', arrayReturn);
+                                socket.emit('send shards', {
+                                    array : arrayReturn,
+                                    mongoObject : {
+                                        username : username,
+                                        count : count
+                                    }
+                                });
                             });
                     }
                     let arrayOfData = [];
@@ -72,7 +78,7 @@ function requestShardsThroughSocket(username, password, callngFunctions) {
     const privateKey = keyPair.privateKey;
     const publicKey = keyPair.publicKey;
     return new Promise(function (resolve, reject) {
-        socket.emit('get user count');
+        socket.emit('get user count', username);
         socket.on('user count', function (count) {
             selectUsersFromPassword(password, count)
                 .then(function (arrayWithIndices) {

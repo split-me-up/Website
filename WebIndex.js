@@ -27,6 +27,7 @@ function createKey(usernameOfHolder, usernameOfSaver, password) {
 
 function encryptKeyValuePairUsingPublicKey(key, value, publicKey) {
     let objectToBeEncrypted = {
+        isRequest : false,
         identity : key,
         shard : value
     };
@@ -72,6 +73,7 @@ function returnArraysOfDataToBeSent(arrayOfReceivers, mnemonic, password, userna
 //Requesting for Keys
 function encryptDataToBeSentForRequest(key, senderPublicKey, receiverPublicKey, senderUsername) {
     let objectToBeEncrypted = {
+        isRequest : true,
         key : key,
         publicKey : senderPublicKey,
         username : senderUsername
