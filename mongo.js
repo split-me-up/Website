@@ -1,8 +1,8 @@
 const mongodb = require('mongodb').MongoClient;
 const pkHolderCollection = "webusers";
 const androidCollection = "androidusers";
-const url = "mongodb://localhost:27017";
-const DbName = "SplitMeUp";
+const url = "mongodb://arvind123:arvind123@ds145574.mlab.com:45574/splitmeup-v2";
+const DbName = "splitmeup-v2";
 
 module.exports = {
 
