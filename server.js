@@ -45,7 +45,7 @@ io.on('connection', function(socket){
     socket.on('verify username', function(data){
         console.log("inside verify username");
         mongo.checkAndroidUser(data.username).then(function(bool){
-            socket.emit('verified username',bool);
+            socket.emit('verified username', bool);
         })
     });
 
@@ -154,32 +154,40 @@ io.on('connection', function(socket){
 
 app.get('/latestMessages', function (req, res) {
     let username = req.query.username;
-    let arrayToBeReturned = getPendingMessages(username);
-    res.send(arrayToBeReturned);
+    getPendingMessages(username)
+        .then(function (arrayToBeReturned) {
+            res.send(arrayToBeReturned);
+        });
 });
 
 function getPendingMessages(username) {
-    let messageObject = messagesArray.find(function (ele) {
-        return ele.username === username
+    return new Promise(function (resolve, reject) {
+       mongo.getPendingMessages(username).then(function (arr) {
+           resolve(arr);
+       });
     });
-    if(messageObject){
-        return messageObject.messages;
-    }else{
-        return [];
-    }
+    // let messageObject = messagesArray.find(function (ele) {
+    //     return ele.username === username
+    // });
+    // if(messageObject){
+    //     return messageObject.messages;
+    // }else{
+    //     return [];
+    // }
 }
 
 function addToUserMessageList(username, data) {
-    let messageObject = messagesArray.find(function (ele) {
-        return ele.username === username
-    });
-    if(messageObject){
-        messageObject.messages.push(data);
-    }else {
-        let objectToBeAdded = {
-            username : username,
-            messages : [data]
-        };
-        messagesArray.push(objectToBeAdded);
-    }
+    mongo.addToPendingMessages(username, data);
+    // let messageObject = messagesArray.find(function (ele) {
+    //     return ele.username === username
+    // });
+    // if(messageObject){
+    //     messageObject.messages.push(data);
+    // }else {
+    //     let objectToBeAdded = {
+    //         username : username,
+    //         messages : [data]
+    //     };
+    //     messagesArray.push(objectToBeAdded);
+    // }
 }

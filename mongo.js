@@ -1,6 +1,7 @@
 const mongodb = require('mongodb').MongoClient;
 const pkHolderCollection = "webusers";
 const androidCollection = "androidusers";
+const pendingMessagesCollection = "pending";
 const url = "mongodb://arvind123:arvind123@ds145574.mlab.com:45574/splitmeup-v2";
 const DbName = "splitmeup-v2";
 
@@ -110,8 +111,63 @@ module.exports = {
                username : username
            }, function (err, result) {
                if(err) throw err;
-               resolve(result);
+               resolve(result.value);
+           })
+        });
+    },
+
+    addToPendingMessages : function (username, message) {
+        let self = this;
+        return new Promise(function (resolve, reject) {
+            self.obj.collection(pendingMessagesCollection).findOne({
+                username : username
+            }, function (err, result) {
+                if(result){
+                    self.obj.collection(pendingMessagesCollection).updateOne(
+                        {username : username},
+                        {$push : {message : message}}
+                    )
+                }else{
+                    let objectToBeAdded = {
+                        username : username,
+                        message : [message]
+                    };
+                    self.obj.collection(pendingMessagesCollection).insertOne(objectToBeAdded, function (err, result) {
+                        resolve();
+                    });
+                }
+            });
+
+        })
+    },
+
+    getPendingMessages : function (username) {
+        let self = this;
+        return new Promise(function (resolve, reject) {
+           self.obj.collection(pendingMessagesCollection).findOneAndDelete({
+               username : username
+           }, function (err, result) {
+               if(result){
+                   if(result.value === null){
+                       resolve([]);
+                   }else{
+                       resolve(result.value.message);
+                   }
+               }else{
+                   resolve([]);
+               }
            })
         });
     }
+
 };
+
+// module.exports.connect().then(function () {
+//    module.exports.getPendingMessages("arvind").then(function (arr) {
+//        console.log(arr);
+//    });
+   //  module.exports.addToPendingMessages("arvind", "hey3");
+   //  module.exports.getAndroidUserDetailsForEncryption(0).then(function (rs) {
+   //      console.log(rs);
+   //  })
+// });
