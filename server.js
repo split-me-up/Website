@@ -70,11 +70,15 @@ io.on('connection', function(socket){
     });
 
     // for webapp to select users from password
-    socket.on('get user count', function(username){
-        mongo.getPrivateKeyUserDetail(username)
-            .then(function (result) {
-                socket.emit('user count', result.number);
-            });
+    socket.on('get user count', function(){
+        // mongo.getPrivateKeyUserDetail(username)
+        //     .then(function (result) {
+        //         socket.emit('user count', result.number);
+        //     });
+        mongo.getNumberOfAndroidUsers()
+            .then(function (number) {
+                socket.emit('user count', number);
+            })
     });
 
     // called from Web App to get public key of various android users
