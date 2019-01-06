@@ -1,175 +1,196 @@
-const bip39 = require('bip39');
-const crypto = require('crypto');
-const sssa = require('sssa-js');
-const cryptico = require('cryptico');
-const CryptoJS = require('crypto-js');
+const bip39 = require("bip39");
+const crypto = require("crypto");
+const sssa = require("sssa-js");
+const cryptico = require("cryptico");
+const CryptoJS = require("crypto-js");
 const SHARE_COUNT = 3;
 const THRESHOLD = 2;
 
 // Sending Functions
 console.log("inside bundle js");
 function mnemonicToSSS(privateKey, password, callback) {
-    let key = privateKey.split('x')[1];
-    return new Promise(function(resolve, reject) {
-        let encKey = CryptoJS.AES.encrypt(key, password).toString();
-        let shares = sssa.create(THRESHOLD, SHARE_COUNT, encKey);
-        resolve(shares);
-        if(callback) callback(shares);
-    });
+  let key = privateKey.split("x")[1];
+  return new Promise(function(resolve, reject) {
+    let encKey = CryptoJS.AES.encrypt(key, password).toString();
+    let shares = sssa.create(THRESHOLD, SHARE_COUNT, encKey);
+    resolve(shares);
+    if (callback) callback(shares);
+  });
 }
 
 function createKey(usernameOfHolder, usernameOfSaver, password) {
-    let combinedUsername = usernameOfHolder + password + usernameOfSaver;
-    let encKey = crypto.createHash('sha256').update(combinedUsername).digest('base64');
-    console.log(encKey);
-    return encKey;
+  let combinedUsername = usernameOfHolder + password + usernameOfSaver;
+  let encKey = crypto
+    .createHash("sha256")
+    .update(combinedUsername)
+    .digest("base64");
+  console.log(encKey);
+  return encKey;
 }
 
 function encryptKeyValuePairUsingPublicKey(key, value, publicKey) {
-    let objectToBeEncrypted = {
-        isRequest : false,
-        identity : key,
-        shard : value
-    };
+  let objectToBeEncrypted = {
+    isRequest: false,
+    identity: key,
+    shard: value
+  };
 
-    let buffer = JSON.stringify(objectToBeEncrypted);
-    let encrypted = cryptico.encrypt(buffer, publicKey);
-    return encrypted.cipher;
+  let buffer = JSON.stringify(objectToBeEncrypted);
+  let encrypted = cryptico.encrypt(buffer, publicKey);
+  return encrypted.cipher;
 }
 
-function returnArraysOfDataToBeSent(arrayOfReceivers, mnemonic, password, username) {
-    console.log("array of Receo", arrayOfReceivers);
-    return new Promise(function (resolve, reject) {
-        function afterLoop(array) {
-            resolve(array);
+function returnArraysOfDataToBeSent(
+  arrayOfReceivers,
+  mnemonic,
+  password,
+  username
+) {
+  console.log("array of Receo", arrayOfReceivers);
+  return new Promise(function(resolve, reject) {
+    function afterLoop(array) {
+      resolve(array);
+    }
+    if (arrayOfReceivers.length !== SHARE_COUNT) {
+      reject("Invalid Number of Receivers");
+    } else {
+      mnemonicToSSS(mnemonic, password).then(function(shares) {
+        let arrayToBeReturned = [];
+        for (let i = 0; i < SHARE_COUNT; i++) {
+          let receiverPublicKey = arrayOfReceivers[i].publicKey;
+          let receiverUsername = arrayOfReceivers[i].username;
+          // let receiverLink = arrayOfReceivers.link;
+          let key = createKey(username, receiverUsername, password);
+          let data = encryptKeyValuePairUsingPublicKey(
+            key,
+            shares[i],
+            receiverPublicKey
+          );
+          let retVal = {
+            data: data,
+            username: receiverUsername
+          };
+          arrayToBeReturned.push(retVal);
+          if (i === SHARE_COUNT - 1) {
+            afterLoop(arrayToBeReturned);
+          }
         }
-        if(arrayOfReceivers.length !== SHARE_COUNT){
-            reject("Invalid Number of Receivers");
-        }else{
-            mnemonicToSSS(mnemonic, password)
-                .then(function (shares) {
-                    let arrayToBeReturned = [];
-                    for(let i = 0; i < SHARE_COUNT; i++){
-                        let receiverPublicKey = arrayOfReceivers[i].publicKey;
-                        let receiverUsername = arrayOfReceivers[i].username;
-                        // let receiverLink = arrayOfReceivers.link;
-                        let key = createKey(username, receiverUsername, password);
-                        let data = encryptKeyValuePairUsingPublicKey(key, shares[i], receiverPublicKey);
-                        let retVal = {
-                            data : data,
-                            username : receiverUsername
-                        };
-                        arrayToBeReturned.push(retVal);
-                        if(i === SHARE_COUNT - 1){
-                            afterLoop(arrayToBeReturned);
-                        }
-                    }
-                });
-        }
-    });
+      });
+    }
+  });
 }
 // Sending Function End
 
 //Requesting for Keys
-function encryptDataToBeSentForRequest(key, senderPublicKey, receiverPublicKey, senderUsername) {
-    let objectToBeEncrypted = {
-        isRequest : true,
-        key : key,
-        publicKey : senderPublicKey,
-        username : senderUsername
-    };
-    let buffer = JSON.stringify(objectToBeEncrypted);
-    let encrypted = cryptico.encrypt(buffer, receiverPublicKey);
-    return encrypted.cipher;
+function encryptDataToBeSentForRequest(
+  key,
+  senderPublicKey,
+  receiverPublicKey,
+  senderUsername
+) {
+  let objectToBeEncrypted = {
+    isRequest: true,
+    key: key,
+    publicKey: senderPublicKey,
+    username: senderUsername
+  };
+  let buffer = JSON.stringify(objectToBeEncrypted);
+  let encrypted = cryptico.encrypt(buffer, receiverPublicKey);
+  return encrypted.cipher;
 }
 
-function requestKeys(arrayOfReceivers, senderPublicKey, password, username){
-    return new Promise(function (resolve, reject) {
-        function afterLoop(array) {
-            resolve(array);
-        }
+function requestKeys(arrayOfReceivers, senderPublicKey, password, username) {
+  return new Promise(function(resolve, reject) {
+    function afterLoop(array) {
+      resolve(array);
+    }
 
-        if(arrayOfReceivers.length !== SHARE_COUNT){
-            reject("Invalid Number of Receivers");
-        }else{
-            let arrayToBeReturned = [];
-            for(let i = 0; i < SHARE_COUNT; i++){
-                // console.log(arrayOfReceivers[i]);
-                let receiverPublicKey = arrayOfReceivers[i].publicKey;
-                let receiverUsername = arrayOfReceivers[i].username;
-                // let receiverLink = arrayOfReceivers.link;
-                let key = createKey(username, receiverUsername, password);
-                let data = encryptDataToBeSentForRequest(key, senderPublicKey, receiverPublicKey, username);
-                let retVal = {
-                    data : data,
-                    username : receiverUsername
-                };
-                arrayToBeReturned.push(retVal);
-                if(i === SHARE_COUNT - 1){
-                    afterLoop(arrayToBeReturned);
-                }
-            }
+    if (arrayOfReceivers.length !== SHARE_COUNT) {
+      reject("Invalid Number of Receivers");
+    } else {
+      let arrayToBeReturned = [];
+      for (let i = 0; i < SHARE_COUNT; i++) {
+        // console.log(arrayOfReceivers[i]);
+        let receiverPublicKey = arrayOfReceivers[i].publicKey;
+        let receiverUsername = arrayOfReceivers[i].username;
+        // let receiverLink = arrayOfReceivers.link;
+        let key = createKey(username, receiverUsername, password);
+        let data = encryptDataToBeSentForRequest(
+          key,
+          senderPublicKey,
+          receiverPublicKey,
+          username
+        );
+        let retVal = {
+          data: data,
+          username: receiverUsername
+        };
+        arrayToBeReturned.push(retVal);
+        if (i === SHARE_COUNT - 1) {
+          afterLoop(arrayToBeReturned);
         }
-    });
+      }
+    }
+  });
 }
 //Requesting for Keys End
 
 //Combining Keys
 function combinePieces(mnemonicShares, password) {
-    let shares = mnemonicShares;
-    let splitVal = sssa.combine(shares);
-    let encKey = splitVal;
-    return new Promise((resolve, reject) => {
-        let bytes  = CryptoJS.AES.decrypt(encKey, password);
-        let plaintext = bytes.toString(CryptoJS.enc.Utf8);
-        resolve('0x' + plaintext);
-    });
+  let shares = mnemonicShares;
+  let splitVal = sssa.combine(shares);
+  let encKey = splitVal;
+  return new Promise((resolve, reject) => {
+    let bytes = CryptoJS.AES.decrypt(encKey, password);
+    let plaintext = bytes.toString(CryptoJS.enc.Utf8);
+    resolve("0x" + plaintext);
+  });
 }
 
 function decryptPieceUsingPrivateKey(encrypted, privateKey) {
-    let result = cryptico.decrypt(encrypted, privateKey);
-    console.log(result);
-    return result.plaintext;
+  let result = cryptico.decrypt(encrypted, privateKey);
+  console.log(result);
+  return result.plaintext;
 }
 
-function arrayOfKeysReceived(arrayOfPieces, privateKey, password){
-    return new Promise(function (resolve, reject) {
-        console.log("PK", privateKey);
-        if(arrayOfPieces.length !== THRESHOLD){
-            reject("Invalid Length of Array");
-        } else {
-            function todoAfterLoop(array, users) {
-              console.log(users, "inside todo after loop");
-                combinePieces(array, password)
-                    .then(function (mnemonic) {
-                      console.log(users , "inside combinePieces then");
-                        resolve({
-                          mnemonic : mnemonic,
-                          users : users
-                        });
-                    })
-            }
-            let arrayToBePassed = [];
-            let userArray = [];
-            for(let i = 0; i < THRESHOLD; i++){
-                let currPiece = arrayOfPieces[i];
-                let shard1 = decryptPieceUsingPrivateKey(currPiece, privateKey);
-                window.App.shard1 = shard1
-                shard = JSON.parse(shard1.toString())
-                console.log(shard);
-                user = shard["userSending"];
-                console.log("inside array to be passed");
-                console.log(user);
-                shard = shard["shard"];
-                userArray.push(user);
-                console.log(userArray, "User Array");
-                arrayToBePassed.push(shard);
-                if(i === THRESHOLD - 1){
-                    todoAfterLoop(arrayToBePassed, userArray);
-                }
-            }
+function arrayOfKeysReceived(arrayOfPieces, privateKey, password) {
+  return new Promise(function(resolve, reject) {
+    console.log("PK", privateKey);
+    if (arrayOfPieces.length !== THRESHOLD) {
+      reject("Invalid Length of Array");
+    } else {
+      function todoAfterLoop(array, users) {
+        console.log(users, ": users. inside todo after loop");
+        console.log(array, ": array. iside todo after loop");
+        combinePieces(array, password).then(function(mnemonic) {
+          console.log(users, "inside combinePieces then");
+          resolve({
+            mnemonic: mnemonic,
+            users: users
+          });
+        });
+      }
+      let arrayToBePassed = [];
+      let userArray = [];
+      for (let i = 0; i < THRESHOLD; i++) {
+        let currPiece = arrayOfPieces[i];
+        let shard1 = decryptPieceUsingPrivateKey(currPiece, privateKey);
+        window.App.shard1 = shard1;
+        shard = JSON.parse(shard1.toString());
+        console.log(shard);
+        user = shard["userSending"];
+        console.log("inside array to be passed");
+        console.log(user);
+        shard = shard["shard"];
+        userArray.push(user);
+        console.log(userArray, "User Array");
+        arrayToBePassed.push(shard);
+        if (i === THRESHOLD - 1) {
+          todoAfterLoop(arrayToBePassed, userArray);
         }
-    });
+      }
+    }
+  });
 }
 //Combining Keys End
 
@@ -253,18 +274,18 @@ function arrayOfKeysReceived(arrayOfPieces, privateKey, password){
 //
 // }
 
-function generateKeys(){
-    let RSAKey = cryptico.generateRSAKey(new Date().getTime(), 512);
-    let publicKey = cryptico.publicKeyString(RSAKey);
-    return {
-        privateKey : RSAKey,
-        publicKey : publicKey
-    }
+function generateKeys() {
+  let RSAKey = cryptico.generateRSAKey(new Date().getTime(), 512);
+  let publicKey = cryptico.publicKeyString(RSAKey);
+  return {
+    privateKey: RSAKey,
+    publicKey: publicKey
+  };
 }
 
 window.App = {
-    Send : returnArraysOfDataToBeSent,
-    Request : requestKeys,
-    Combine : arrayOfKeysReceived,
-    Generate : generateKeys
-  };
+  Send: returnArraysOfDataToBeSent,
+  Request: requestKeys,
+  Combine: arrayOfKeysReceived,
+  Generate: generateKeys
+};
