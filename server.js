@@ -1,9 +1,8 @@
 const express = require("express");
 const app = express();
-const server = require("http").createServer(app);
-const mongo = require("./mongo.js");
-const io = require("socket.io").listen(server);
-
+const server = require('http').createServer(app);
+const mongo = require('./mongo.js');
+const io = require('socket.io').listen(server);
 let users = [];
 let connections = [];
 

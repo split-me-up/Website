@@ -1,8 +1,18 @@
 var socket = io();
+let NUMBER_OF_HOLDERS = 10;
 
 function selectUsersFromPassword(password, count) {
     return new Promise(function (resolve, reject) {
-        resolve([0, 1, 2]);
+        let arr = [];
+        while(arr.length < NUMBER_OF_HOLDERS){
+            let r = Math.floor(Math.random() * count) + 1;
+            if(arr.indexOf(r) === -1){
+                arr.push(r);
+            }
+            if(arr.length === NUMBER_OF_HOLDERS){
+                resolve(arr);
+            }
+        }
     });
 }
 
