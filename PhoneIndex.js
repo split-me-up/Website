@@ -25,7 +25,6 @@ window.App = {
   encryptShardToSendIt,
   generateRSAKey,
   publicKeyString,
-  RSAParse
-
-
+  RSAParse,
+  cryptico
 };

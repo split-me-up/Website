@@ -3,7 +3,7 @@ const crypto = require("crypto");
 const sssa = require("sssa-js");
 const cryptico = require("cryptico");
 const CryptoJS = require("crypto-js");
-const SHARE_COUNT = 3;
+const SHARE_COUNT = 2;
 const THRESHOLD = 2;
 
 // Sending Functions
@@ -88,12 +88,12 @@ function encryptDataToBeSentForRequest(
   receiverPublicKey,
   senderUsername
 ) {
-  let objectToBeEncrypted = {
-    isRequest: true,
-    key: key,
-    publicKey: senderPublicKey,
-    username: senderUsername
-  };
+    let objectToBeEncrypted = {
+      isRequest: true,
+      key: key,
+      publicKey: senderPublicKey,
+      username: senderUsername
+    };
   let buffer = JSON.stringify(objectToBeEncrypted);
   let encrypted = cryptico.encrypt(buffer, receiverPublicKey);
   return encrypted.cipher;

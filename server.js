@@ -4,6 +4,8 @@ const server = require('http').createServer(app);
 const mongo = require('./mongo.js');
 const io = require('socket.io').listen(server);
 const bodyParser = require('body-parser');
+const admin = require('firebase-admin');
+const serviceAccount = require('./serviceAccountKey.json');
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -20,7 +22,13 @@ const PORT = 2000;
 
 server.listen(process.env.PORT || PORT, "0.0.0.0", function() {
     mongo.connect().then(function() {
+        admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount),
+            databaseURL: 'https://splitmeup2.firebaseio.com'
+        });
         console.log("Socket Listening at port", PORT);
+        // sendPushNotificationToUser('Dadi');
+        // sendPushNotificationToUser('Baal');
     });
 });
 
@@ -56,14 +64,25 @@ io.on("connection", function(socket) {
         });
     });
 
+
+    app.post('/auth', function (req, res) {
+       let username = req.body.username;
+       let pass = req.body.password;
+       // console.log(username, pass);
+       mongo.registerAndroidUser(username, pass);
+       res.send();
+    });
+
     // add android device to the array of connected users and add the new user to the database
     socket.on("setNewDevice", function(data) {
         // here clientId is the username of android device sent from android device
-        nodes.push({ clientId: data.clientId, socket: socket });
-        mongo.addAndroidUser(data.clientId, "", data.publicKey);
-        console.log(data.clientId, "logged in successfully");
-        console.log(nodes.length);
-        workOnDisconnect(socket);
+        // nodes.push({ clientId: data.clientId, socket: socket });
+        console.log("token", data.token);
+        mongo.addToPendingRegistrations(data.clientId, data.publicKey, data.address, data.token);
+        // mongo.addAndroidUser(data.clientId, "", data.publicKey, data.token);
+        console.log(data.clientId, "registered successfully");
+        // console.log(nodes.length);
+        // workOnDisconnect(socket);
     });
 
     // login android device to the array of connected users
@@ -159,25 +178,47 @@ io.on("connection", function(socket) {
 // called from the android device whenever it is opened to get the latest list of pending messages
 app.post("/latestMessages", function(req, res) {
     let username = req.body.username;
+    console.log("Latest Messages Requested by", username);
     getPendingMessages(username).then(function(arrayToBeReturned) {
+        console.log(arrayToBeReturned);
         res.send(arrayToBeReturned);
     });
 });
 
+app.post("/updateToken", function (req, res) {
+
+});
+
 function sendPushNotificationToUser(username) {
-    console.log("Notification Pushed to ", username);
-    // TODO push notification from here
+    mongo.getAndroidUserPushToken(username)
+        .then(function (token) {
+            let message = {
+                notification: {
+                    title: 'Hey!, ' + username,
+                    body: 'You May Have Earned Dai!'
+                }
+            };
+            admin.messaging().sendToDevice(token, message)
+                .then((response) => {
+                    // Response is a message ID string.
+                    console.log("Notification Pushed to at token  " + username, token);
+                    console.log('Successfully sent message:', response);
+                })
+                .catch((error) => {
+                    console.log('Error sending message:', error);
+                });
+        });
 }
 
 function checkForPendingMessages(username, message){
-    mongo.getPendingMessages(username)
+    mongo.checkPendingMessages(username)
         .then(function (array) {
-            if(array.length() === 0){
+            if(array.length === 0){
                 sendPushNotificationToUser(username);
                 let interval = setInterval(function () {
-                    mongo.getPendingMessages(username)
+                    mongo.checkPendingMessages(username)
                         .then(function (arr) {
-                            if(arr.length() === 0){
+                            if(arr.length === 0){
                                 clearInterval(interval);
                             }else{
                                 sendPushNotificationToUser(username);
@@ -185,13 +226,14 @@ function checkForPendingMessages(username, message){
                         })
                 }, PUSH_INTERVAL);
             }
+            console.log("sending");
             mongo.addToPendingMessages(username, message);
         });
 }
 
 function getPendingMessages(username) {
     return new Promise(function(resolve, reject) {
-        mongo.getPendingMessages(username).then(function(arr) {
+        mongo.checkPendingMessages(username).then(function(arr) {
             resolve(arr);
         });
     });
