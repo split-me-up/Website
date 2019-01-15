@@ -189,6 +189,7 @@ app.post("/updateToken", function (req, res) {
 
 });
 
+
 function sendPushNotificationToUser(username) {
     mongo.getAndroidUserPushToken(username)
         .then(function (token) {
@@ -211,14 +212,14 @@ function sendPushNotificationToUser(username) {
 }
 
 function checkForPendingMessages(username, message){
-    mongo.checkPendingMessages(username)
-        .then(function (array) {
-            if(array.length === 0){
+    mongo.getNumberOfPendingMessages(username)
+        .then(function (number) {
+            if(number === 0){
                 sendPushNotificationToUser(username);
                 let interval = setInterval(function () {
-                    mongo.checkPendingMessages(username)
+                    mongo.getNumberOfPendingMessages(username)
                         .then(function (arr) {
-                            if(arr.length === 0){
+                            if(number === 0){
                                 clearInterval(interval);
                             }else{
                                 sendPushNotificationToUser(username);
@@ -233,7 +234,7 @@ function checkForPendingMessages(username, message){
 
 function getPendingMessages(username) {
     return new Promise(function(resolve, reject) {
-        mongo.checkPendingMessages(username).then(function(arr) {
+        mongo.getPendingMessages(username).then(function(arr) {
             resolve(arr);
         });
     });

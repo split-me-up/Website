@@ -8,6 +8,13 @@ const url =
 const DbName = "splitmeup-v2";
 
 module.exports = {
+
+    /*
+        Function used to connect to the mongo database
+        Called when server is initiated
+
+        @Returns {Promise} resolve true if connected
+    */
     connect: function() {
         let self = this;
         return new Promise(function(resolve, reject) {
@@ -35,38 +42,57 @@ module.exports = {
         });
     },
 
-    registerAndroidUser: function(username, password) {
+
+
+    /*
+        Function to register a Storage Device on Database
+        Called by Server Administrator after he is added to the contract
+
+        @Param {string} username : username of the Storage Device
+        @Returns {promise} resolve true if registered
+     */
+    registerAndroidUser: function(username) {
         let self = this;
         return new Promise(function(resolve, reject) {
             self.obj.collection('password').findOne(
                 {password : password}, function (err, result) {
-                   if(err) throw err;
-                   if(result){
-                       self.obj.collection(incompleteRegistration).findOneAndDelete({
-                           username : username
-                       }, function (err, res) {
-                           let result = res.value;
-                           let objtoadd = {
-                               username: result.username,
-                               publicKey: result.publicKey,
-                               token : result.token,
-                               index: self.currentIndex + 1
-                           };
-                           self.obj
-                               .collection(androidCollection)
-                               .insertOne(objtoadd, function(err, result) {
-                                   if (err) reject(err);
-                                   else {
-                                       self.currentIndex = self.currentIndex + 1;
-                                       resolve(true);
-                                   }
-                               });
-                       });
-                   }
+                    if(err) throw err;
+                    if(result){
+                        self.obj.collection(incompleteRegistration).findOneAndDelete({
+                            username : username
+                        }, function (err, res) {
+                            let result = res.value;
+                            let objtoadd = {
+                                username: result.username,
+                                publicKey: result.publicKey,
+                                token : result.token,
+                                index: self.currentIndex + 1
+                            };
+                            self.obj
+                                .collection(androidCollection)
+                                .insertOne(objtoadd, function(err, result) {
+                                    if (err) reject(err);
+                                    else {
+                                        self.currentIndex = self.currentIndex + 1;
+                                        resolve(true);
+                                    }
+                                });
+                        });
+                    }
                 });
         });
     },
 
+
+
+    /*
+        Function to check if the Storage Account username is available
+        Called by the Storage Device at the time of registration
+
+        @Param {string} username : username of the Storage Account
+        @Returns {Promise} { resolve true if available }
+                           { resolve false if unavailable }
+     */
     checkAndroidUser: function(username) {
         let self = this;
         return new Promise(function(resolve, reject) {
@@ -87,11 +113,34 @@ module.exports = {
             );
         });
     },
-    //adding async here to wrap the return value into a promise
+
+
+
+    /*
+        Function to get the number of Storage Accounts already registered with the network
+        Called by Key Splitter while splitting the key
+        Added async here to wrap the return value into a promise
+
+        @Returns {number} : number of registered Storage Accounts
+     */
     getNumberOfAndroidUsers: async function() {
         return this.currentIndex + 1;
     },
 
+
+
+
+    /*
+        Function to get details of the Storage Account to be used for encryption
+        Called by Key Splitter at the time of splitting
+
+        @Param {number} index : index of the Storage Account whose details are needed
+        @Returns {Promise} { resolves Object {
+                                                username    : username of Storage Account,
+                                                publicKey   : public key of Storage Account
+                                              }
+
+     */
     getAndroidUserDetailsForEncryption: function(index) {
         let self = this;
         return new Promise(function(resolve, reject) {
@@ -113,6 +162,16 @@ module.exports = {
         });
     },
 
+
+
+
+    /*
+        Function to retrieve Push Token of the Storage Account
+        Called from server so that notification can be sent to the device
+
+        @Param {string} username : username of the Storage Account
+        @Returns {Promise} { resolves {string} push token }
+     */
     getAndroidUserPushToken: function(username){
         let self = this;
         return new Promise(function(resolve, reject) {
@@ -130,16 +189,26 @@ module.exports = {
         });
     },
 
-    updateToken : function(username){
-        // let self = this;
-        // return new Promise(function (resolve, reject) {
-        //     self.obj.collection(androidCollection).updateOne(
-        //         {username : username},
-        //         $set: {  : true }
-        //     )
-        // })
-    },
 
+    // updateToken : function(username){
+    //     // let self = this;
+    //     // return new Promise(function (resolve, reject) {
+    //     //     self.obj.collection(androidCollection).updateOne(
+    //     //         {username : username},
+    //     //         $set: {  : true }
+    //     //     )
+    //     // })
+    // },
+
+
+
+    /*
+        Function to add Key Splitter to the database
+        Called by Key Splitter after he has sent the pieces
+
+        @Param {string} username : username of the Key Splitter
+        @Param {number} noOfUsers : no of storage accounts at the time of splitting
+     */
     addPrivateKeyUser: function(username, noOfUsers) {
         let self = this;
         return new Promise(function(resolve, reject) {
@@ -156,21 +225,41 @@ module.exports = {
         });
     },
 
-    getPrivateKeyUserDetail: function(username) {
-        let self = this;
-        return new Promise(function(resolve, reject) {
-            self.obj.collection(pkHolderCollection).findOne(
-                {
-                    username: username
-                },
-                function(err, result) {
-                    if (err) throw err;
-                    resolve(result.value);
-                }
-            );
-        });
-    },
 
+
+
+    /*
+        Function to get the number of Storage Accounts when the Key Spitter did split
+        Called by Key Splitter at the time of Regeneration
+
+        @Param {string} username : username of the Key Splitter
+        @Returns {Promise} { resolves {number} : number of Storage Accounts}
+     */
+    // getPrivateKeyUserDetail: function(username) {
+    //     let self = this;
+    //     return new Promise(function(resolve, reject) {
+    //         self.obj.collection(pkHolderCollection).findOne(
+    //             {
+    //                 username: username
+    //             },
+    //             function(err, result) {
+    //                 if (err) throw err;
+    //                 resolve(result.value);
+    //             }
+    //         );
+    //     });
+    // },
+
+
+
+    /*
+        Function to add a message to the array of pending messages
+        Called by the server in case when Storage account is not connected through socket
+
+        @Param {string} username : username of Storage Account
+        @Param {string} message : message that is pending
+        @Returns {Promise} resolves once done
+     */
     addToPendingMessages: function(username, message) {
         console.log("Adding Pending Messages for ", username);
         let self = this;
@@ -203,7 +292,16 @@ module.exports = {
         });
     },
 
-    checkPendingMessages: function(username){
+
+
+    /*
+        Function to get the number of pending messages for a certain Storage Account
+        Called by server while adding to the array of pending messages
+
+        @Param {string} username : username of the Storage Account
+        @Returns {Promise} {resolves {number} : number of pending messages
+     */
+    getNumberOfPendingMessages: function(username){
         let self = this;
         return new Promise(function(resolve, reject) {
             self.obj.collection(pendingMessagesCollection).findOne(
@@ -213,19 +311,30 @@ module.exports = {
                         console.log(result);
                         if (result == null) {
                             console.log("inside if");
-                            resolve([]);
+                            resolve(0);
                         } else {
                             console.log("inside else");
-                            resolve(result.message);
+                            resolve(result.message.length);
                         }
                     } else {
-                        resolve([]);
+                        resolve(0);
                     }
                 }
             );
         });
     },
 
+
+
+    /*
+        Function to add to a db of Storage Accounts whose gas cost is yet to be paid by the administrator
+        Called by the Storage Account while registering to the network
+
+        @Param {string} username : username of the Storage Account
+        @Param {string} publicKey : public key of the Storage Account to be used in ecryption
+        @Param {string} address : Ethereum Address of the Storage Account
+        @Param {string} key : firebase push token of the Storage Account
+     */
     addToPendingRegistrations: function(username, publicKey, address, key) {
         let self = this;
         let objtoadd = {
@@ -236,10 +345,18 @@ module.exports = {
         };
         console.log(self);
         self.obj.collection(incompleteRegistration).insertOne(objtoadd, function (err, result) {
-                if(err) throw err;
-            });
+            if(err) throw err;
+        });
     },
 
+
+    /*
+        Function to get the pending messages array for Storage Account
+        Called by Storage Account when he opens the app
+
+        @Param {string} username : username of Storage Account
+        @Returns {Promise} { resolves {array} : array of pending messages }
+     */
     getPendingMessages: function(username) {
         let self = this;
         return new Promise(function(resolve, reject) {
