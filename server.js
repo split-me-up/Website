@@ -17,8 +17,9 @@ app.use(bodyParser.json());
 let nodes = [];
 
 // The interval after which a push notification is sent to the android user
-let PUSH_INTERVAL = 60000;
+const PUSH_INTERVAL = 60000;
 const PORT = 2000;
+const MAX_PENDING_MESSAGES = 2;
 
 server.listen(process.env.PORT || PORT, "0.0.0.0", function() {
     mongo.connect().then(function() {
@@ -173,6 +174,23 @@ io.on("connection", function(socket) {
             );
         }
     });
+
+    socket.on("check user validity", function (index) {
+        mongo.getNumberOfPendingMessages("", index)
+            .then(function (count) {
+                if(count >= MAX_PENDING_MESSAGES){
+                    socket.emit("user validity",  {
+                        bool : false,
+                        index : index
+                    });
+                } else {
+                    socket.emit("user validity",  {
+                        bool : true,
+                        index : index
+                    });
+                }
+            })
+    });
 });
 
 // called from the android device whenever it is opened to get the latest list of pending messages
@@ -186,6 +204,20 @@ app.post("/latestMessages", function(req, res) {
 });
 
 app.post("/updateToken", function (req, res) {
+
+});
+
+app.post('/checkUserValidity', function (req, res) {
+
+    let username = req.body.username;
+    mongo.getNumberOfPendingMessages(username)
+        .then(function (count) {
+            if(count >= MAX_PENDING_MESSAGES){
+                res.send(false);
+            } else {
+                res.send(true);
+            }
+        })
 
 });
 

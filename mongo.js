@@ -299,11 +299,25 @@ module.exports = {
         Called by server while adding to the array of pending messages
 
         @Param {string} username : username of the Storage Account
+        @Param {number} index : index of Storage Account on record
         @Returns {Promise} {resolves {number} : number of pending messages
      */
-    getNumberOfPendingMessages: function(username){
+    getNumberOfPendingMessages: function(username, index){
         let self = this;
         return new Promise(function(resolve, reject) {
+            if(index){
+
+                self.obj.collection(androidCollection).findOne(
+                    {index: index},
+                    function(err, result) {
+                        if (err) reject(err);
+                        else {
+                            username = result.username;
+                        }
+                    }
+                );
+
+            }
             self.obj.collection(pendingMessagesCollection).findOne(
                 {username: username},
                 function(err, result) {

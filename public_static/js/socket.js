@@ -1,20 +1,32 @@
-var socket = io();
+let socket = io();
 let NUMBER_OF_HOLDERS = 2;
+
+function getRandomNumber() {
+    let rand = Math.random();
+    let r = Math.floor(rand * count - 1) + 1;
+    return r;
+}
 
 function selectUsersFromPassword(password, count) {
     return new Promise(function (resolve, reject) {
         let arr = [];
-        while(arr.length < NUMBER_OF_HOLDERS){
-            let rand = Math.random();
-            console.log("rand", rand);
-            let r = Math.floor(rand * count - 1) + 1;
-            if(arr.indexOf(r) === -1){
-                arr.push(r);
-            }
-            if(arr.length === NUMBER_OF_HOLDERS){
-                resolve(arr);
-            }
-        }
+        let initialRand  = getRandomNumber();
+        socket.emit("check user validity", initialRand);
+
+        socket.on("user validity", function (object) {
+           if(object.bool){
+               console.log("Index Selected", object.index);
+               arr.push(object.index);
+               if(arr.length !== NUMBER_OF_HOLDERS){
+                   let nextRand = getRandomNumber();
+                   if(arr.indexOf(nextRand) === -1){
+                       socket.emit("check user validity", nextRand);
+                   }
+               }else {
+                   resolve(arr);
+               }
+           }
+        });
     });
 }
 
