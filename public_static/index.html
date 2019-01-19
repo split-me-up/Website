@@ -363,71 +363,80 @@
       var privateKey = $("#seed-phrase").val();
 
       // Use this object as events to whatever happens during the process
-      let callingObject = {
-        gettingApproval: function(transactionData, callback) {
-          // for showing prompt for getting Approval
-          console.log("Getting Approval Transaction Data = ", transactionData);
-          let transaction_modal = $(".transaction-modal");
-          let modal_body = transaction_modal
-            .children(".modal-card")
-            .children(".modal-card-body");
-          let temp_content = modal_body.children(".from").html();
-          let confirm_transaction = transaction_modal
-            .children(".modal-card")
-            .children(".modal-card-foot")
-            .children(".confirm-transaction");
-          let cancel_transaction = transaction_modal
-            .children(".modal-card")
-            .children(".modal-card-foot")
-            .children(".cancel-transaction");
-          modal_body
-            .children(".from")
-            .html(temp_content + transactionData.from);
-          temp_content = modal_body.children(".to").html();
-          modal_body.children(".to").html(temp_content + transactionData.to);
-          temp_content = modal_body.children(".cost").html();
-          modal_body.children(".cost").html(temp_content + transactionData.gas);
-          transaction_modal.addClass("is-active");
-          confirm_transaction.click(() => {
-            transaction_modal.removeClass("is-active");
-            callback();
+      checkUsernameAvailability(username)
+          .then(function (available) {
+              if(available){
+                  let callingObject = {
+                      gettingApproval: function(transactionData, callback) {
+                          // for showing prompt for getting Approval
+                          console.log("Getting Approval Transaction Data = ", transactionData);
+                          let transaction_modal = $(".transaction-modal");
+                          let modal_body = transaction_modal
+                              .children(".modal-card")
+                              .children(".modal-card-body");
+                          let temp_content = modal_body.children(".from").html();
+                          let confirm_transaction = transaction_modal
+                              .children(".modal-card")
+                              .children(".modal-card-foot")
+                              .children(".confirm-transaction");
+                          let cancel_transaction = transaction_modal
+                              .children(".modal-card")
+                              .children(".modal-card-foot")
+                              .children(".cancel-transaction");
+                          modal_body
+                              .children(".from")
+                              .html(temp_content + transactionData.from);
+                          temp_content = modal_body.children(".to").html();
+                          modal_body.children(".to").html(temp_content + transactionData.to);
+                          temp_content = modal_body.children(".cost").html();
+                          modal_body.children(".cost").html(temp_content + transactionData.gas);
+                          transaction_modal.addClass("is-active");
+                          confirm_transaction.click(() => {
+                              transaction_modal.removeClass("is-active");
+                              callback();
+                          });
+                          cancel_transaction.click(() => {
+                              transaction_modal.removeClass("is-active");
+                              $(".model-for-result").addClass("hide");
+                              $("#create-piece-button").html("Create Pieces !");
+                              $("#create-piece-button").prop("disabled", false);
+                          });
+
+                          // set a prompt here when the user clicks to sign the transaction to be sent
+                      },
+                      approvalMining: function(hash) {
+                          console.log("https://kovan.etherscan.io/tx/" + hash);
+                      },
+                      sendingDai: function(transactionData, callback) {
+                          // set a prompt here when the user clicks to sign the transaction to be sent
+                          console.log("Sending Dai Transaction Data = ", transactionData);
+                          callback();
+                      },
+                      sendingDaiMining: function(hash) {
+                          console.log("https://kovan.etherscan.io/tx/" + hash);
+                      }
+                  };
+                  splitKey(privateKey, username, callingObject).then(function() {
+                      console.log("sending");
+                      sendShardsThroughSocket(username, password, privateKey).then(
+                          function() {
+                              $("#create-piece-button").html("Sending your Key to Users...");
+
+                              $("#create-piece-button").html("Completed");
+                              $(".wait-request").html(
+                                  "Your Shares Have Been Distributed Over The Network"
+                              );
+
+                              $(".preloader").removeClass("hide");
+                          }
+                      );
+                  });
+
+              }else {
+                  console.log('Username Already Used');
+                  //TODO username unavailable work accordingly
+              }
           });
-          cancel_transaction.click(() => {
-            transaction_modal.removeClass("is-active");
-            $(".model-for-result").addClass("hide");
-            $("#create-piece-button").html("Create Pieces !");
-            $("#create-piece-button").prop("disabled", false);
-          });
-
-          // set a prompt here when the user clicks to sign the transaction to be sent
-        },
-        approvalMining: function(hash) {
-          console.log("https://kovan.etherscan.io/tx/" + hash);
-        },
-        sendingDai: function(transactionData, callback) {
-          // set a prompt here when the user clicks to sign the transaction to be sent
-          console.log("Sending Dai Transaction Data = ", transactionData);
-          callback();
-        },
-        sendingDaiMining: function(hash) {
-          console.log("https://kovan.etherscan.io/tx/" + hash);
-        }
-      };
-      splitKey(privateKey, username, callingObject).then(function() {
-        console.log("sending");
-        sendShardsThroughSocket(username, password, privateKey).then(
-          function() {
-            $("#create-piece-button").html("Sending your Key to Users...");
-
-            $("#create-piece-button").html("Completed");
-            $(".wait-request").html(
-              "Your Shares Have Been Distributed Over The Network"
-            );
-
-            $(".preloader").removeClass("hide");
-          }
-        );
-      });
     });
 
     $("#recover-button").click(function() {
