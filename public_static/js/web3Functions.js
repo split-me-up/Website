@@ -334,9 +334,12 @@ const Erc20Abi = [
 const TokenAddress = "0xC4375B7De8af5a38a93548eb8453a498222C4fF2";
 const TokenContract = new web3.eth.Contract(Erc20Abi, TokenAddress);
 const DaiToBeSent = 2;
+const APPROVAL = '999999999999999999999999999999';
 console.log(contract);
 
-// function to get Dai balance from the Dai Contract
+/* Function to fetch Dai Balance for a certain Address
+   @Param address {string}
+   Returns {number} (Dai Balance) Wrapped in a Promise */
 function getDaiBalance(address) {
     return new Promise(function(resolve, reject) {
         TokenContract.methods
@@ -351,7 +354,13 @@ function getDaiBalance(address) {
     });
 }
 
-// function to check if the contract has a certain allowance value with the Dai contract
+/*
+    Function checks if a certain address has provided allowance to the
+    SplitMeUp smart contract
+    @Param address {string}
+    Returns {boolean} (true if allowance provided
+                       false if allowance not provided) wrapped in a Promise
+ */
 function checkApproval(address) {
     return new Promise(function(resolve, reject) {
         TokenContract.methods
@@ -359,7 +368,7 @@ function checkApproval(address) {
             .call()
             .then(function(result) {
                 console.log(result);
-                if (result >= 999999999999999999999999999999) {
+                if (result.toString().length >= APPROVAL.length) {
                     resolve(true);
                 } else {
                     resolve(false);
@@ -368,6 +377,11 @@ function checkApproval(address) {
     });
 }
 
+/*
+    Function checks if a certain username is used or not
+    @Param username {string}
+    Returns {boolean} (true if username can be used and vice versa) wrapped in a Promise
+ */
 function checkUsernameAvailability(username){
     return new Promise(function (resolve, reject) {
        contract.methods
@@ -379,11 +393,19 @@ function checkUsernameAvailability(username){
     });
 }
 
+/*
+    Function gets allowance for a certain address from the Dai Contract
+    for the SplitMeUp smart contract by making a transaction
+    @Param privateKey {string}
+    @Param address {string}
+    @Param callingFunctions {Object}
+    Returns {boolean} (true if everything works fine) wrapped in a Promise
+ */
 function getApproved(privateKey, address, callingFunctions) {
     alert("Getting Approval from Dai");
     return new Promise(function(resolve, reject) {
         TokenContract.methods
-            .approve(contractAddress, "999999999999999999999999999999")
+            .approve(contractAddress, APPROVAL)
             .estimateGas({
                 from: address
             })
@@ -394,7 +416,7 @@ function getApproved(privateKey, address, callingFunctions) {
                     to: web3.utils.toChecksumAddress(TokenAddress),
                     gas: gasPrice + 1000,
                     data: TokenContract.methods
-                        .approve(contractAddress, "999999999999999999999999999999")
+                        .approve(contractAddress, APPROVAL)
                         .encodeABI()
                 };
 
@@ -430,6 +452,15 @@ function getApproved(privateKey, address, callingFunctions) {
     });
 }
 
+/*
+    Function to make a transaction to the SplitMeUp smart contract to store
+    Dai Security and save username on it
+    @Param username {string}
+    @Param privateKey {string}
+    @Param address {string}
+    @Param callingFunctions {Object}
+    Returns {boolean} (true if everything works fine) wrapped in a Promise
+ */
 function depositSecurity(username, privateKey, address, callingFunctions) {
     return new Promise(function(resolve, reject) {
         alert("Depositing Security = " + DaiToBeSent + "Dai");
