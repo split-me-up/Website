@@ -580,7 +580,7 @@ function getApproved(privateKey, address, callingFunctions) {
       .estimateGas({
         from: address
       })
-      .then(function(gasPrice) {
+      .then(async function(gasPrice) {
         console.log(gasPrice);
         let transaction = {
           from: web3.utils.toChecksumAddress(address),
@@ -591,34 +591,43 @@ function getApproved(privateKey, address, callingFunctions) {
             .encodeABI()
         };
 
-        callingFunctions.gettingApproval(transaction, function() {
-          let signPromise = web3.eth.accounts.signTransaction(
-            transaction,
-            privateKey
-          );
-          console.log(signPromise);
-          signPromise
-            .then(signedTx => {
-              console.log(signedTx);
-              const sentTx = web3.eth.sendSignedTransaction(
-                signedTx.raw || signedTx.rawTransaction
-              );
-              sentTx.on("receipt", receipt => {
-                console.log("Got Allowance \n", receipt);
-                resolve(true);
-              });
-              sentTx.on("transactionHash", function(hash) {
-                callingFunctions.approvalMining(hash);
-                console.log("Allowance hash =", hash);
-              });
-              sentTx.on("error", err => {
-                reject(err);
-              });
-            })
-            .catch(err => {
-              reject(err);
+            web3.eth.getBalance(address).then(bal => {
+                let requiredEth = gasPrice + 1000;
+                let gasInEth = web3.util.fromWei(requiredEth.toString());
+                console.log(typeof requiredEth);
+                if(bal > requiredEth){
+                    callingFunctions.gettingApproval(transaction, gasInEth, function() {
+                        let signPromise = web3.eth.accounts.signTransaction(
+                            transaction,
+                            privateKey
+                        );
+                        console.log(signPromise);
+                        signPromise
+                            .then(signedTx => {
+                                console.log(signedTx);
+                                const sentTx = web3.eth.sendSignedTransaction(
+                                    signedTx.raw || signedTx.rawTransaction
+                                );
+                                sentTx.on("receipt", receipt => {
+                                    console.log("Got Allowance \n", receipt);
+                                    resolve(true);
+                                });
+                                sentTx.on("transactionHash", function(hash) {
+                                    callingFunctions.approvalMining(hash);
+                                    console.log("Allowance hash =", hash);
+                                });
+                                sentTx.on("error", err => {
+                                    reject(err);
+                                });
+                            })
+                            .catch(err => {
+                                reject(err);
+                            });
+                    });
+                } else {
+                    callingFunctions.insufficientEth();
+                }
             });
-        });
       });
   });
 }
@@ -638,7 +647,7 @@ function depositSecurity(username, privateKey, address, callingFunctions) {
     contract.methods
       .addPrivateKeyHolder(username)
       .estimateGas({ from: address })
-      .then(function(gasPrice) {
+      .then(async function(gasPrice) {
         let transaction = {
           from: web3.utils.toChecksumAddress(address),
           to: web3.utils.toChecksumAddress(contractAddress),
@@ -646,36 +655,46 @@ function depositSecurity(username, privateKey, address, callingFunctions) {
           data: contract.methods.addPrivateKeyHolder(username).encodeABI()
         };
 
-        callingFunctions.sendingDai(transaction, function() {
-          let signPromise = web3.eth.accounts.signTransaction(
-            transaction,
-            privateKey
-          );
-          console.log(signPromise);
-          signPromise
-            .then(signedTx => {
-              console.log(signedTx);
-              const sentTx = web3.eth.sendSignedTransaction(
-                signedTx.raw || signedTx.rawTransaction
-              );
-              sentTx.on("receipt", receipt => {
-                console.log(receipt);
-                alert("Transaction Mined");
-                resolve(true);
-              });
-              sentTx.on("transactionHash", function(hash) {
-                // alert("Transaction Mining");
-                callingFunctions.sendingDaiMining(hash);
-                console.log("hash =", hash);
-              });
-              sentTx.on("error", err => {
-                reject(err);
-              });
-            })
-            .catch(err => {
-              reject(err);
-            });
-        });
+          web3.eth.getBalance(address).then(bal => {
+              let requiredEth = gasPrice + 1000;
+              let gasInEth = web3.util.fromWei(requiredEth.toString());
+              console.log(typeof requiredEth);
+              if(bal > requiredEth){
+                  callingFunctions.sendingDai(transaction, gasInEth, function() {
+                      let signPromise = web3.eth.accounts.signTransaction(
+                          transaction,
+                          privateKey
+                      );
+                      console.log(signPromise);
+                      signPromise
+                          .then(signedTx => {
+                              console.log(signedTx);
+                              const sentTx = web3.eth.sendSignedTransaction(
+                                  signedTx.raw || signedTx.rawTransaction
+                              );
+                              sentTx.on("receipt", receipt => {
+                                  console.log(receipt);
+                                  alert("Transaction Mined");
+                                  resolve(true);
+                              });
+                              sentTx.on("transactionHash", function(hash) {
+                                  // alert("Transaction Mining");
+                                  callingFunctions.sendingDaiMining(hash);
+                                  console.log("hash =", hash);
+                              });
+                              sentTx.on("error", err => {
+                                  reject(err);
+                              });
+                          })
+                          .catch(err => {
+                              reject(err);
+                          });
+                  });
+              } else {
+                  callingFunctions.insufficientEth();
+              }
+
+          });
       });
   });
 }
@@ -693,7 +712,7 @@ function privateKeyRegeneratedTransaction(
     contract.methods
       .privateKeyRetreived(username, user1, user2)
       .estimateGas({ from: address })
-      .then(function(gasPrice) {
+      .then(async function(gasPrice) {
         let transaction = {
           from: web3.utils.toChecksumAddress(address),
           to: web3.utils.toChecksumAddress(contractAddress),
@@ -702,41 +721,53 @@ function privateKeyRegeneratedTransaction(
             .privateKeyRetreived(username, user1, user2)
             .encodeABI()
         };
-        let signPromise = web3.eth.accounts.signTransaction(
-          transaction,
-          privateKey
-        );
-        console.log(signPromise);
-        signPromise
-          .then(signedTx => {
-            console.log(signedTx);
-            const sentTx = web3.eth.sendSignedTransaction(
-              signedTx.raw || signedTx.rawTransaction
-            );
-            sentTx.on("receipt", receipt => {
-              callingFunctions.blockMined(receipt.transactionHash);
-              console.log(receipt);
-              alert(
-                "Transaction Mined check At https://kovan.etherscan.io/tx/" +
-                  receipt.transactionHash
-              );
-              resolve(true);
-            });
-            sentTx.on("transactionHash", function(hash) {
-              callingFunctions.transactionToRetrieveSecuritySent(hash);
-              alert(
-                "Transaction Mining check At https://kovan.etherscan.io/tx/" +
-                  hash
-              );
-              console.log("hash =", hash);
-            });
-            sentTx.on("error", err => {
-              reject(err);
-            });
-          })
-          .catch(err => {
-            reject(err);
+
+          web3.eth.getBalance(address).then(bal => {
+              let requiredEth = gasPrice + 1000;
+              // let gasInEth = web3.util.fromWei(requiredEth.toString());
+              console.log(typeof requiredEth);
+              if(bal > requiredEth){
+                  let signPromise = web3.eth.accounts.signTransaction(
+                      transaction,
+                      privateKey
+                  );
+                  console.log(signPromise);
+                  signPromise
+                      .then(signedTx => {
+                          console.log(signedTx);
+                          const sentTx = web3.eth.sendSignedTransaction(
+                              signedTx.raw || signedTx.rawTransaction
+                          );
+                          sentTx.on("receipt", receipt => {
+                              callingFunctions.blockMined(receipt.transactionHash);
+                              console.log(receipt);
+                              alert(
+                                  "Transaction Mined check At https://kovan.etherscan.io/tx/" +
+                                  receipt.transactionHash
+                              );
+                              resolve(true);
+                          });
+                          sentTx.on("transactionHash", function(hash) {
+                              callingFunctions.transactionToRetrieveSecuritySent(hash);
+                              alert(
+                                  "Transaction Mining check At https://kovan.etherscan.io/tx/" +
+                                  hash
+                              );
+                              console.log("hash =", hash);
+                          });
+                          sentTx.on("error", err => {
+                              reject(err);
+                          });
+                      })
+                      .catch(err => {
+                          reject(err);
+                      });
+              }else {
+                  callingFunctions.insufficientEth();
+              }
           });
+
+
       });
   });
 }
@@ -790,4 +821,12 @@ function splitKey(privateKey, username, callingFunctions) {
       }
     });
   });
+}
+
+async function getEtherBalance(address){
+    web3.eth.getBalance(address)
+        .then(x => {
+            console.log(web3.utils.fromWei(x));
+            return x;
+        });
 }

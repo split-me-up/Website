@@ -385,7 +385,7 @@
 
       // Use this object as events to whatever happens during the process
       let callingObject = {
-        gettingApproval: function(transactionData, callback) {
+        gettingApproval: function(transactionData, gasInEth, callback) {
           // for showing prompt for getting Approval
           console.log("Getting Approval Transaction Data = ", transactionData);
           let transaction_modal = $(".transaction-modal");
@@ -425,14 +425,17 @@
         approvalMining: function(hash) {
           console.log("https://kovan.etherscan.io/tx/" + hash);
         },
-        sendingDai: function(transactionData, callback) {
+        sendingDai: function(transactionData, gasInEth, callback) {
           // set a prompt here when the user clicks to sign the transaction to be sent
           console.log("Sending Dai Transaction Data = ", transactionData);
           callback();
         },
         sendingDaiMining: function(hash) {
           console.log("https://kovan.etherscan.io/tx/" + hash);
-        }
+        },
+          insufficientEth : function () {
+              alert("Insufficient Eth");
+          }
       };
       splitKey(privateKey, username, callingObject).then(function() {
         console.log("sending");
