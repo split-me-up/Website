@@ -536,7 +536,9 @@ function checkApproval(address) {
       .then(function(result) {
         console.log(result);
         if (result.toString().length >= APPROVAL.length) {
-          resolve(true);
+          // resolves false only for testing
+          resolve(false);
+          // resolve(true);
         } else {
           resolve(false);
         }
@@ -573,7 +575,6 @@ function checkUsernameAvailability(username) {
     Returns {boolean} (true if everything works fine) wrapped in a Promise
  */
 function getApproved(privateKey, address, callingFunctions) {
-  alert("Getting Approval from Dai");
   return new Promise(function(resolve, reject) {
     TokenContract.methods
       .approve(contractAddress, APPROVAL)
@@ -591,43 +592,43 @@ function getApproved(privateKey, address, callingFunctions) {
             .encodeABI()
         };
 
-            web3.eth.getBalance(address).then(bal => {
-                let requiredEth = gasPrice + 1000;
-                let gasInEth = web3.util.fromWei(requiredEth.toString());
-                console.log(typeof requiredEth);
-                if(bal > requiredEth){
-                    callingFunctions.gettingApproval(transaction, gasInEth, function() {
-                        let signPromise = web3.eth.accounts.signTransaction(
-                            transaction,
-                            privateKey
-                        );
-                        console.log(signPromise);
-                        signPromise
-                            .then(signedTx => {
-                                console.log(signedTx);
-                                const sentTx = web3.eth.sendSignedTransaction(
-                                    signedTx.raw || signedTx.rawTransaction
-                                );
-                                sentTx.on("receipt", receipt => {
-                                    console.log("Got Allowance \n", receipt);
-                                    resolve(true);
-                                });
-                                sentTx.on("transactionHash", function(hash) {
-                                    callingFunctions.approvalMining(hash);
-                                    console.log("Allowance hash =", hash);
-                                });
-                                sentTx.on("error", err => {
-                                    reject(err);
-                                });
-                            })
-                            .catch(err => {
-                                reject(err);
-                            });
-                    });
-                } else {
-                    callingFunctions.insufficientEth();
-                }
+        web3.eth.getBalance(address).then(bal => {
+          let requiredEth = gasPrice + 1000;
+          let gasInEth = web3.utils.fromWei(requiredEth.toString());
+          console.log(typeof requiredEth);
+          if (bal > requiredEth) {
+            callingFunctions.gettingApproval(transaction, gasInEth, function() {
+              let signPromise = web3.eth.accounts.signTransaction(
+                transaction,
+                privateKey
+              );
+              console.log(signPromise);
+              signPromise
+                .then(signedTx => {
+                  console.log(signedTx);
+                  const sentTx = web3.eth.sendSignedTransaction(
+                    signedTx.raw || signedTx.rawTransaction
+                  );
+                  sentTx.on("receipt", receipt => {
+                    console.log("Got Allowance \n", receipt);
+                    resolve(true);
+                  });
+                  sentTx.on("transactionHash", function(hash) {
+                    callingFunctions.approvalMining(hash);
+                    console.log("Allowance hash =", hash);
+                  });
+                  sentTx.on("error", err => {
+                    reject(err);
+                  });
+                })
+                .catch(err => {
+                  reject(err);
+                });
             });
+          } else {
+            callingFunctions.insufficientEth();
+          }
+        });
       });
   });
 }
@@ -643,7 +644,6 @@ function getApproved(privateKey, address, callingFunctions) {
  */
 function depositSecurity(username, privateKey, address, callingFunctions) {
   return new Promise(function(resolve, reject) {
-    alert("Depositing Security = " + DaiToBeSent + "Dai");
     contract.methods
       .addPrivateKeyHolder(username)
       .estimateGas({ from: address })
@@ -655,46 +655,45 @@ function depositSecurity(username, privateKey, address, callingFunctions) {
           data: contract.methods.addPrivateKeyHolder(username).encodeABI()
         };
 
-          web3.eth.getBalance(address).then(bal => {
-              let requiredEth = gasPrice + 1000;
-              let gasInEth = web3.util.fromWei(requiredEth.toString());
-              console.log(typeof requiredEth);
-              if(bal > requiredEth){
-                  callingFunctions.sendingDai(transaction, gasInEth, function() {
-                      let signPromise = web3.eth.accounts.signTransaction(
-                          transaction,
-                          privateKey
-                      );
-                      console.log(signPromise);
-                      signPromise
-                          .then(signedTx => {
-                              console.log(signedTx);
-                              const sentTx = web3.eth.sendSignedTransaction(
-                                  signedTx.raw || signedTx.rawTransaction
-                              );
-                              sentTx.on("receipt", receipt => {
-                                  console.log(receipt);
-                                  alert("Transaction Mined");
-                                  resolve(true);
-                              });
-                              sentTx.on("transactionHash", function(hash) {
-                                  // alert("Transaction Mining");
-                                  callingFunctions.sendingDaiMining(hash);
-                                  console.log("hash =", hash);
-                              });
-                              sentTx.on("error", err => {
-                                  reject(err);
-                              });
-                          })
-                          .catch(err => {
-                              reject(err);
-                          });
-                  });
-              } else {
-                  callingFunctions.insufficientEth();
-              }
+        web3.eth.getBalance(address).then(bal => {
+          let requiredEth = gasPrice + 1000;
+          let gasInEth = web3.utils.fromWei(requiredEth.toString());
+          console.log(typeof requiredEth);
+          if (bal > requiredEth) {
+            callingFunctions.sendingDai(transaction, gasInEth, function() {
+              let signPromise = web3.eth.accounts.signTransaction(
+                transaction,
+                privateKey
+              );
+              console.log(signPromise);
+              signPromise
+                .then(signedTx => {
+                  console.log(signedTx);
+                  const sentTx = web3.eth.sendSignedTransaction(
+                    signedTx.raw || signedTx.rawTransaction
+                  );
+                  sentTx.on("receipt", receipt => {
+                    console.log(receipt);
 
-          });
+                    resolve(true);
+                  });
+                  sentTx.on("transactionHash", function(hash) {
+                    // alert("Transaction Mining");
+                    callingFunctions.sendingDaiMining(hash);
+                    console.log("hash =", hash);
+                  });
+                  sentTx.on("error", err => {
+                    reject(err);
+                  });
+                })
+                .catch(err => {
+                  reject(err);
+                });
+            });
+          } else {
+            callingFunctions.insufficientEth();
+          }
+        });
       });
   });
 }
@@ -708,7 +707,6 @@ function privateKeyRegeneratedTransaction(
   callingFunctions
 ) {
   return new Promise(function(resolve, reject) {
-    alert("Using Private Key to gather security deposit");
     contract.methods
       .privateKeyRetreived(username, user1, user2)
       .estimateGas({ from: address })
@@ -722,52 +720,44 @@ function privateKeyRegeneratedTransaction(
             .encodeABI()
         };
 
-          web3.eth.getBalance(address).then(bal => {
-              let requiredEth = gasPrice + 1000;
-              // let gasInEth = web3.util.fromWei(requiredEth.toString());
-              console.log(typeof requiredEth);
-              if(bal > requiredEth){
-                  let signPromise = web3.eth.accounts.signTransaction(
-                      transaction,
-                      privateKey
-                  );
-                  console.log(signPromise);
-                  signPromise
-                      .then(signedTx => {
-                          console.log(signedTx);
-                          const sentTx = web3.eth.sendSignedTransaction(
-                              signedTx.raw || signedTx.rawTransaction
-                          );
-                          sentTx.on("receipt", receipt => {
-                              callingFunctions.blockMined(receipt.transactionHash);
-                              console.log(receipt);
-                              alert(
-                                  "Transaction Mined check At https://kovan.etherscan.io/tx/" +
-                                  receipt.transactionHash
-                              );
-                              resolve(true);
-                          });
-                          sentTx.on("transactionHash", function(hash) {
-                              callingFunctions.transactionToRetrieveSecuritySent(hash);
-                              alert(
-                                  "Transaction Mining check At https://kovan.etherscan.io/tx/" +
-                                  hash
-                              );
-                              console.log("hash =", hash);
-                          });
-                          sentTx.on("error", err => {
-                              reject(err);
-                          });
-                      })
-                      .catch(err => {
-                          reject(err);
-                      });
-              }else {
-                  callingFunctions.insufficientEth();
-              }
-          });
+        web3.eth.getBalance(address).then(bal => {
+          let requiredEth = gasPrice + 1000;
+          // let gasInEth = web3.util.fromWei(requiredEth.toString());
+          console.log(typeof requiredEth);
+          if (bal > requiredEth) {
+            let signPromise = web3.eth.accounts.signTransaction(
+              transaction,
+              privateKey
+            );
+            console.log(signPromise);
+            signPromise
+              .then(signedTx => {
+                console.log(signedTx);
+                const sentTx = web3.eth.sendSignedTransaction(
+                  signedTx.raw || signedTx.rawTransaction
+                );
+                sentTx.on("receipt", receipt => {
+                  callingFunctions.blockMined(receipt.transactionHash);
+                  console.log(receipt);
 
+                  resolve(true);
+                });
+                sentTx.on("transactionHash", function(hash) {
+                  callingFunctions.transactionToRetrieveSecuritySent(hash);
 
+                  console.log("hash =", hash);
+                });
+                sentTx.on("error", err => {
+                  reject(err);
+                });
+              })
+              .catch(err => {
+                reject(err);
+              });
+          } else {
+            callingFunctions.insufficientEth();
+          }
+        });
       });
   });
 }
@@ -817,16 +807,15 @@ function splitKey(privateKey, username, callingFunctions) {
           }
         });
       } else {
-        alert("Insufficient Dai Balance in Your Account");
+        console.log("Insufficient Dai Balance in Your Account");
       }
     });
   });
 }
 
-async function getEtherBalance(address){
-    web3.eth.getBalance(address)
-        .then(x => {
-            console.log(web3.utils.fromWei(x));
-            return x;
-        });
+async function getEtherBalance(address) {
+  web3.eth.getBalance(address).then(x => {
+    console.log(web3.utils.fromWei(x));
+    return x;
+  });
 }

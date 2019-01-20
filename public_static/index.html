@@ -264,7 +264,7 @@
 
     <div class="modal-card">
       <div class="modal-card-head">
-        <div class="modal-card-title">Warning!</div>
+        <div class="modal-card-title" id="warning-modal-title">Warning!</div>
       </div>
       <div class="modal-card-body">
         <p class="is-warning" id="warning-message">
@@ -286,9 +286,10 @@
         </div>
       </div>
       <div class="modal-card-body">
-        <p class="from">from:</p>
-        <p class="to">to:</p>
-        <p class="cost">gas Cost:</p>
+        <p class="from">from: <span> </span></p>
+        <p class="to">to: <span> </span></p>
+        <p class="cost">gas Cost: <span> </span></p>
+        <p class="dai" style="display:none">dai Cost: <span> </span></p>
       </div>
       <div class="modal-card-foot">
         <button class="button is-success confirm-transaction">
@@ -337,6 +338,7 @@
         username: username
       };
       // send username to backend code goes here
+      console.log("username", username);
       checkUsernameAvailability(username)
         .then(boolean => {
           password = $("#password").val();
@@ -382,8 +384,10 @@
       $("#seed-phrase").attr("disabled", "disabled");
       $(this).html("Encrypting your key...");
       var privateKey = $("#seed-phrase").val();
-
+      let username = $("#username").val();
+      console.log("username", username);
       // Use this object as events to whatever happens during the process
+
       let callingObject = {
         gettingApproval: function(transactionData, gasInEth, callback) {
           // for showing prompt for getting Approval
@@ -392,7 +396,7 @@
           let modal_body = transaction_modal
             .children(".modal-card")
             .children(".modal-card-body");
-          let temp_content = modal_body.children(".from").html();
+
           let confirm_transaction = transaction_modal
             .children(".modal-card")
             .children(".modal-card-foot")
@@ -403,11 +407,18 @@
             .children(".cancel-transaction");
           modal_body
             .children(".from")
-            .html(temp_content + transactionData.from);
-          temp_content = modal_body.children(".to").html();
-          modal_body.children(".to").html(temp_content + transactionData.to);
-          temp_content = modal_body.children(".cost").html();
-          modal_body.children(".cost").html(temp_content + transactionData.gas);
+            .children("span")
+            .html(transactionData.from);
+
+          modal_body
+            .children(".to")
+            .children("span")
+            .html(transactionData.to);
+
+          modal_body
+            .children(".cost")
+            .children("span")
+            .html(gasInEth);
           transaction_modal.addClass("is-active");
           confirm_transaction.click(() => {
             transaction_modal.removeClass("is-active");
@@ -423,19 +434,76 @@
           // set a prompt here when the user clicks to sign the transaction to be sent
         },
         approvalMining: function(hash) {
+          let transaction_link = "https://kovan.etherscan.io/tx/" + hash;
           console.log("https://kovan.etherscan.io/tx/" + hash);
+          $("#warning-message").html(
+            `Your Transaction is being mined, you can check it on this link <a target='_blank' href='${transaction_link}'>'${transaction_link}'</a>`
+          );
+          $("#close-warning-modal").html("Ok");
+          $("#warning-modal-title").html("Transaction in Progress");
+          $("#close-warning-modal").click(() => {
+            $("#warning").removeClass("is-active");
+          });
+
+          $("#warning").addClass("is-active");
         },
         sendingDai: function(transactionData, gasInEth, callback) {
           // set a prompt here when the user clicks to sign the transaction to be sent
-          console.log("Sending Dai Transaction Data = ", transactionData);
-          callback();
+
+          let transaction_modal = $(".transaction-modal");
+          let modal_body = transaction_modal
+            .children(".modal-card")
+            .children(".modal-card-body");
+          // let temp_content = modal_body.children(".from").html();
+          let confirm_transaction = transaction_modal
+            .children(".modal-card")
+            .children(".modal-card-foot")
+            .children(".confirm-transaction");
+          let cancel_transaction = transaction_modal
+            .children(".modal-card")
+            .children(".modal-card-foot")
+            .children(".cancel-transaction");
+          modal_body
+            .children(".from")
+            .children("span")
+            .html(transactionData.from);
+
+          modal_body
+            .children(".to")
+            .children("span")
+            .html(transactionData.to);
+          temp_content = modal_body.children(".cost").html();
+          modal_body
+            .children(".cost")
+            .children("span")
+            .html(gasInEth);
+          temp_content = "";
+          temp_content = modal_body.children(".dai").html();
+          modal_body.children(".dai").css("display", "block");
+          modal_body
+            .children(".dai")
+            .children("span")
+            .html((2).toString());
+          transaction_modal.addClass("is-active");
+          confirm_transaction.click(() => {
+            transaction_modal.removeClass("is-active");
+            callback();
+          });
+          cancel_transaction.click(() => {
+            transaction_modal.removeClass("is-active");
+            $(".model-for-result").addClass("hide");
+            $("#create-piece-button").html("Create Pieces !");
+            $("#create-piece-button").prop("disabled", false);
+          });
+
+          // callback();
         },
         sendingDaiMining: function(hash) {
           console.log("https://kovan.etherscan.io/tx/" + hash);
         },
-          insufficientEth : function () {
-              alert("Insufficient Eth");
-          }
+        insufficientEth: function() {
+          alert("Insufficient Eth");
+        }
       };
       splitKey(privateKey, username, callingObject).then(function() {
         console.log("sending");
