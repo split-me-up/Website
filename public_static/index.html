@@ -1,730 +1,813 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="shortcut icon" href="" />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
-      crossorigin="anonymous"
-    />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="shortcut icon" href="" />
+  <link
+          rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+          crossorigin="anonymous"
+  />
 
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.css"
-    />
-    <script
-      defer
-      src="https://use.fontawesome.com/releases/v5.1.0/js/all.js"
-    ></script>
-    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.js"></script>
-    <script src="js/web3Functions.js"></script>
-    <script
-      src="https://code.jquery.com/jquery-2.2.4.min.js"
-      integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
-      crossorigin="anonymous"
-    ></script>
-    <link rel="stylesheet" href="css/preloader.css" />
-    <script type="text/javascript" src="js/bundle.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
-    <script src="js/socket.js"></script>
-    <link
-      href="https://fonts.googleapis.com/css?family=Josefin+Sans"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
-      integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
-      crossorigin="anonymous"
-    />
-    <title>SplitMeUp!</title>
-  </head>
-  <body>
-    <section class="hero is-primary">
-      <div class="hero-body">
-        <div class="container">
-          <div class="level level-title-main-title">
-            <link
-              href="https://fonts.googleapis.com/css?family=Pacifico"
-              rel="stylesheet"
-            />
-            <h1
-              class="title level-item"
-              style=" font-family: Pacifico , cursive;"
-            >
-              Split Me Up! <span class="beta"><b> Aplha</b></span>
-            </h1>
-          </div>
-          <div class="level">
-            <link
-              href="https://fonts.googleapis.com/css?family=Satisfy"
-              rel="stylesheet"
-            />
-            <h1
-              class="subtitle level-item"
-              style="font-family: Satisfy, cursive;"
-            >
-              The digital way to secure your private keys!!!
-            </h1>
-          </div>
-
-          <div
-            style="font-family: Josefin Sans ; text-align: center ; font-size: 1.5em; "
-          >
-            <br /><br />Github Link :
-            <a href="https://github.com/arvindkalra/SplitMeUp"
-              ><i class="fab fa-github"></i
-            ></a>
-          </div>
-        </div>
+  <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.css"
+  />
+  <script
+          defer
+          src="https://use.fontawesome.com/releases/v5.1.0/js/all.js"
+  ></script>
+  <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.js"></script>
+  <script src="js/web3Functions.js"></script>
+  <script
+          src="https://code.jquery.com/jquery-2.2.4.min.js"
+          integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+          crossorigin="anonymous"
+  ></script>
+  <link rel="stylesheet" href="css/preloader.css" />
+  <script type="text/javascript" src="js/bundle.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+  <script src="js/socket.js"></script>
+  <link
+          href="https://fonts.googleapis.com/css?family=Josefin+Sans"
+          rel="stylesheet"
+  />
+  <link
+          rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+          integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+          crossorigin="anonymous"
+  />
+  <title>SplitMeUp!</title>
+</head>
+<body>
+<section class="hero is-primary">
+  <div class="hero-body">
+    <div class="container">
+      <div class="level level-title-main-title">
+        <link
+                href="https://fonts.googleapis.com/css?family=Pacifico"
+                rel="stylesheet"
+        />
+        <h1
+                class="title level-item"
+                style=" font-family: Pacifico , cursive;"
+        >
+          Split Me Up! <span class="beta"><b> Aplha</b></span>
+        </h1>
       </div>
-    </section>
-    <div class="column card-container-column">
       <div class="level">
-        <i class="fab fa-keycdn"></i>
-
-        <div class="description-level-item">
-          Simply login to our app with your username and password and we will
-          share your seed phrase with you.
-        </div>
-        <div class="level-item">
-          <a
-            class="button is-primary main-working-button"
-            id="recover-your-key-idd"
-            >Recover Your Key!</a
-          >
-        </div>
+        <link
+                href="https://fonts.googleapis.com/css?family=Satisfy"
+                rel="stylesheet"
+        />
+        <h1
+                class="subtitle level-item"
+                style="font-family: Satisfy, cursive;"
+        >
+          The digital way to secure your private keys!!!
+        </h1>
       </div>
 
-      <div class="level main-paperless-level">
-        <i class="fas fa-user-lock"></i>
-        <div class="description-level-item">
-          Securely Upload your private key to our app. We will neither store
-          your password nor your seed phrase anywhere with us( scouts honour! ).
-          <!--
-            For more information on how our software works, <i><a style="color: green;">Click here.</a></i>
-          -->
-        </div>
-        <div class="level-item">
-          <a
-            class="button is-primary main-working-button"
-            id="login-new-user-button"
-            >Go Digital!</a
-          >
-        </div>
+      <div
+              style="font-family: Josefin Sans ; text-align: center ; font-size: 1.5em; "
+      >
+        <br /><br />Github Link :
+        <a href="https://github.com/arvindkalra/SplitMeUp"
+        ><i class="fab fa-github"></i
+        ></a>
       </div>
     </div>
+  </div>
+</section>
+<div class="column card-container-column">
+  <div class="level">
+    <i class="fab fa-keycdn"></i>
 
-    <div class="custom-account" id="login-new-user-modal">
-      <div class="modal-card" id="login-new-user-modal-card">
-        <!-- <header class="modal-card-head"> -->
-        <p class="modal-card-title"><b>Create an Account</b></p>
-        <hr />
-        <hr />
-        <hr />
-
-        <div class="column" style="padding: 0">
-          <div class="field">
-            <label class="label">Username</label>
-            <div class="control">
-              <input
-                class="input"
-                type="text"
-                id="username"
-                placeholder="Text input"
-              />
-              <span class="help is-warning">Remember this username</span>
-            </div>
-          </div>
-          <div class="field">
-            <label class="label">Password</label>
-            <div class="control">
-              <input
-                class="input"
-                id="password"
-                type="password"
-                placeholder="Create new password"
-              />
-              <span class="help is-warning"
-                >We will use this password to encrypt your seed phrase, so
-                choose it wisely!</span
-              >
-              <span class="help is-warning"
-                >Relax we at split me up dont save this password anywhere</span
-              >
-            </div>
-          </div>
-          <div class="field">
-            <label class="label">Confirm Password</label>
-            <div class="control">
-              <input
-                id="confirm-password"
-                class="input"
-                type="password"
-                placeholder="Confirm password"
-              />
-            </div>
-          </div>
-        </div>
-
-        <br />
-        <footer class="footer-button">
-          <button class="button is-success" id="create-account">
-            Create Account
-          </button>
-          <button class="button close-modal">Cancel</button>
-        </footer>
-      </div>
-      <div class="modal-card hide" id="enter-seed-phrase">
-        <p class="modal-card-title"><b>Let the Splitting Begin</b></p>
-        <hr />
-        <hr />
-        <hr />
-
-        <div class="column">
-          <h3 class="subtitle"><b>Enter Your seed Phrase</b></h3>
-          <p class="is-size-6	">
-            Enter the seed phrase that you use to generate your private key...
-            Don't worry, we at 'Split me Up' promise not to see or store your
-            key or the password you just entered anywhere with us.(You can check
-            you terms and agreement and the code on our app.)
-          </p>
-          <br />
-
-          <textarea
-            class="textarea"
-            name="name"
-            id="seed-phrase"
-            placeholder="Enter Private Key"
-            value=" "
-          ></textarea>
-          <br />
-          <button class="button is-success" id="create-piece-button">
-            Create Pieces!
-          </button>
-        </div>
-        <!-- </section> -->
-      </div>
-
-      <div class="model-for-result">
-        <div class="wait-request"></div>
-
-        <div class="preloader loading hide">
-          <span class="slice"></span> <span class="slice"></span>
-          <span class="slice"></span> <span class="slice"></span>
-          <span class="slice"></span> <span class="slice"></span>
-        </div>
-      </div>
+    <div class="description-level-item">
+      Simply login to our app with your username and password and we will
+      share your seed phrase with you.
     </div>
+    <div class="level-item">
+      <a
+              class="button is-primary main-working-button"
+              id="recover-your-key-idd"
+      >Recover Your Key!</a
+      >
+    </div>
+  </div>
 
-    <div class="recover-card">
-      <div class="recover-your-key modal-card">
-        <h1><b>Recover Your Key</b></h1>
-        <hr />
-        <hr />
-        <hr />
-        <br />
+  <div class="level main-paperless-level">
+    <i class="fas fa-user-lock"></i>
+    <div class="description-level-item">
+      Securely Upload your private key to our app. We will neither store
+      your password nor your seed phrase anywhere with us( scouts honour! ).
+      <!--
+        For more information on how our software works, <i><a style="color: green;">Click here.</a></i>
+      -->
+    </div>
+    <div class="level-item">
+      <a
+              class="button is-primary main-working-button"
+              id="login-new-user-button"
+      >Go Digital!</a
+      >
+    </div>
+  </div>
+</div>
+
+<div class="custom-account" id="login-new-user-modal">
+  <div class="modal-card" id="login-new-user-modal-card">
+    <!-- <header class="modal-card-head"> -->
+    <p class="modal-card-title"><b>Create an Account</b></p>
+    <hr />
+    <hr />
+    <hr />
+
+    <div class="column" style="padding: 0">
+      <div class="field">
         <label class="label">Username</label>
-        <input
-          class="input"
-          id="account_recover_name"
-          placeholder="Enter Username"
-        />
+        <div class="control">
+          <input
+                  class="input"
+                  type="text"
+                  id="username"
+                  placeholder="Text input"
+          />
+          <span class="help is-warning">Remember this username</span>
+        </div>
+      </div>
+      <div class="field">
         <label class="label">Password</label>
-        <input
-          class="input"
-          id="account_recover_password"
-          placeholder="Enter Password"
-        />
-        <br />
-        <br />
-        <button id="recover-button">Recover Key</button>
-      </div>
-
-      <div class="model-for-result">
-        <div class="wait-request">
-          Your request is under Process . Please wait until we receive all the
-          shares from the nodes. <br />
-          This process might take some time.
+        <div class="control">
+          <input
+                  class="input"
+                  id="password"
+                  type="password"
+                  placeholder="Create new password"
+          />
+          <span class="help is-warning"
+          >We will use this password to encrypt your seed phrase, so
+                choose it wisely!</span
+          >
+          <span class="help is-warning"
+          >Relax we at split me up dont save this password anywhere</span
+          >
         </div>
-
-        <div class="preloader loading hide">
-          <span class="slice"></span> <span class="slice"></span>
-          <span class="slice"></span> <span class="slice"></span>
-          <span class="slice"></span> <span class="slice"></span>
+      </div>
+      <div class="field">
+        <label class="label">Confirm Password</label>
+        <div class="control">
+          <input
+                  id="confirm-password"
+                  class="input"
+                  type="password"
+                  placeholder="Confirm password"
+          />
         </div>
       </div>
     </div>
-  </body>
-  <div class="modal" id="warning">
-    <div class="modal-background"></div>
 
-    <div class="modal-card">
-      <div class="modal-card-head">
-        <div class="modal-card-title" id="warning-modal-title">Warning!</div>
-      </div>
-      <div class="modal-card-body">
-        <p class="is-warning" id="warning-message">
-          <!-- sorry! The password that you entered did not match -->
-        </p>
-      </div>
-      <div class="modal-card-foot">
-        <button class="button is-success" id="close-warning-modal">
-          <!-- Re-Enter Password -->
-        </button>
-      </div>
+    <br />
+    <footer class="footer-button">
+      <button class="button is-success" id="create-account">
+        Create Account
+      </button>
+      <button class="button close-modal">Cancel</button>
+    </footer>
+  </div>
+  <div class="modal-card hide" id="enter-seed-phrase">
+    <p class="modal-card-title"><b>Let the Splitting Begin</b></p>
+    <hr />
+    <hr />
+    <hr />
+
+    <div class="column">
+      <h3 class="subtitle"><b>Enter Your seed Phrase</b></h3>
+      <p class="is-size-6	">
+        Enter the seed phrase that you use to generate your private key...
+        Don't worry, we at 'Split me Up' promise not to see or store your
+        key or the password you just entered anywhere with us.(You can check
+        you terms and agreement and the code on our app.)
+      </p>
+      <br />
+
+      <textarea
+              class="textarea"
+              name="name"
+              id="seed-phrase"
+              placeholder="Enter Private Key"
+              value=" "
+      ></textarea>
+      <br />
+      <button class="button is-success" id="create-piece-button">
+        Create Pieces!
+      </button>
+    </div>
+    <!-- </section> -->
+  </div>
+
+  <div class="model-for-result">
+    <div class="wait-request"></div>
+
+    <div class="preloader loading hide">
+      <span class="slice"></span> <span class="slice"></span>
+      <span class="slice"></span> <span class="slice"></span>
+      <span class="slice"></span> <span class="slice"></span>
     </div>
   </div>
-  <div class="transaction-modal modal">
-    <div class="modal-card">
-      <div class="modal-card-head">
-        <div class="modal-card-title">
-          Please Confirm Transaction To Continue
-        </div>
-      </div>
-      <div class="modal-card-body">
-        <p class="from">from: <span> </span></p>
-        <p class="to">to: <span> </span></p>
-        <p class="cost">gas Cost: <span> </span></p>
-        <p class="dai" style="display:none">dai Cost: <span> </span></p>
-      </div>
-      <div class="modal-card-foot">
-        <button class="button is-success confirm-transaction">
-          Confirm Transaction
-        </button>
-        <button class="button is-warning cancel-transaction">
-          Cancel Transaction
-        </button>
-      </div>
-    </div>
+</div>
+
+<div class="recover-card">
+  <div class="recover-your-key modal-card">
+    <h1><b>Recover Your Key</b></h1>
+    <hr />
+    <hr />
+    <hr />
+    <br />
+    <label class="label">Username</label>
+    <input
+            class="input"
+            id="account_recover_name"
+            placeholder="Enter Username"
+    />
+    <label class="label">Password</label>
+    <input
+            class="input"
+            id="account_recover_password"
+            placeholder="Enter Password"
+    />
+    <br />
+    <br />
+    <button id="recover-button">Recover Key</button>
   </div>
 
-  <script type="text/javascript">
+  <div class="model-for-result">
+    <div class="wait-request">
+      Your request is under Process . Please wait until we receive all the
+      shares from the nodes. <br />
+      This process might take some time.
+    </div>
+
+    <div class="preloader loading hide">
+      <span class="slice"></span> <span class="slice"></span>
+      <span class="slice"></span> <span class="slice"></span>
+      <span class="slice"></span> <span class="slice"></span>
+    </div>
+  </div>
+</div>
+</body>
+<div class="modal" id="warning">
+  <div class="modal-background"></div>
+
+  <div class="modal-card">
+    <div class="modal-card-head">
+      <div class="modal-card-title" id="warning-modal-title">Warning!</div>
+    </div>
+    <div class="modal-card-body">
+      <p class="is-warning" id="warning-message">
+        <!-- sorry! The password that you entered did not match -->
+      </p>
+    </div>
+    <div class="modal-card-foot">
+      <button class="button is-success" id="close-warning-modal">
+        <!-- Re-Enter Password -->
+      </button>
+    </div>
+  </div>
+</div>
+<div class="transaction-modal modal">
+  <div class="modal-card">
+    <div class="modal-card-head">
+      <div class="modal-card-title">
+        Please Confirm Transaction To Continue
+      </div>
+    </div>
+    <div class="modal-card-body">
+      <p class="from">from: <span> </span></p>
+      <p class="to">to: <span> </span></p>
+      <p class="cost">gas Cost: <span> </span></p>
+      <p class="dai" style="display:none">dai Cost: <span> </span></p>
+    </div>
+    <div class="modal-card-foot">
+      <button class="button is-success confirm-transaction">
+        Confirm Transaction
+      </button>
+      <button class="button is-warning cancel-transaction">
+        Cancel Transaction
+      </button>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
     password = "";
     username = "";
     confirm_password = "";
 
     $(function() {
-      console.log("document ready");
+        console.log("document ready");
 
-      $("#recover-your-key-idd").click(function() {
-        $(".recover-your-key")[0].style.display = "block";
-      });
+        $("#recover-your-key-idd").click(function() {
+            $(".recover-your-key")[0].style.display = "block";
+        });
 
-      $("#login-new-user-button").click(function() {
-        $("#login-new-user-modal").addClass("is-active");
-        $(".custom-account")[0].style.display = "block";
-      });
-      $(".main-working-button").click(function() {
-        $(".card-container-column")[0].style.display = "none";
-      });
+        $("#login-new-user-button").click(function() {
+            $("#login-new-user-modal").addClass("is-active");
+            $(".custom-account")[0].style.display = "block";
+        });
+        $(".main-working-button").click(function() {
+            $(".card-container-column")[0].style.display = "none";
+        });
 
-      $(".delete").click(function() {
-        $("#login-new-user-modal").removeClass("is-active");
-        $(".card-container-column")[0].style.display = "";
-      });
-      $(".close-modal").click(function() {
-        $("#login-new-user-modal").removeClass("is-active");
-        $(".card-container-column")[0].style.display = "";
-      });
+        $(".delete").click(function() {
+            $("#login-new-user-modal").removeClass("is-active");
+            $(".card-container-column")[0].style.display = "";
+        });
+        $(".close-modal").click(function() {
+            $("#login-new-user-modal").removeClass("is-active");
+            $(".card-container-column")[0].style.display = "";
+        });
     });
 
     $("#create-account").click(function() {
-      let username = $("#username").val();
-      data = {
-        username: username
-      };
-      // send username to backend code goes here
-      console.log("username", username);
-      checkUsernameAvailability(username)
-        .then(boolean => {
-          password = $("#password").val();
-          confirm_password = $("#confirm-password").val();
-          if (password === confirm_password && password.length !== 0) {
-            $("#login-new-user-modal-card").addClass("hide");
-            $("#enter-seed-phrase").removeClass("hide");
-          } else {
-            $("#warning-message").html(
-              "sorry! The password that you entered did not match"
-            );
-            $("#close-warning-modal").html("Re-enter Password");
-            $("#warning").addClass("is-active");
-            $("#close-warning-modal").click(() => {
-              $("#warning").removeClass("is-active");
-              $("#password").val("");
-              $("#confirm-password").val("");
-              password = "";
-              confirm_password = "";
+        let username = $("#username").val();
+        data = {
+            username: username
+        };
+        // send username to backend code goes here
+        console.log("username", username);
+        checkUsernameAvailability(username)
+            .then(boolean => {
+                password = $("#password").val();
+                confirm_password = $("#confirm-password").val();
+                if (password === confirm_password && password.length !== 0) {
+                    $("#login-new-user-modal-card").addClass("hide");
+                    $("#enter-seed-phrase").removeClass("hide");
+                } else {
+                    $("#warning-message").html(
+                        "sorry! The password that you entered did not match"
+                    );
+                    $("#close-warning-modal").html("Re-enter Password");
+                    $("#warning").addClass("is-active");
+                    $("#close-warning-modal").click(() => {
+                        $("#warning").removeClass("is-active");
+                        $("#password").val("");
+                        $("#confirm-password").val("");
+                        password = "";
+                        confirm_password = "";
+                    });
+                }
+            })
+            .catch(boolean => {
+                console.log("sorry username taken");
+                $("#warning-message").html("sorry! This username is already taken");
+                $("#close-warning-modal").html("Re-enter Username");
+                $("#warning").addClass("is-active");
+                $("#close-warning-modal").click(() => {
+                    $("#warning").removeClass("is-active");
+                    $("#password").val("");
+                    $("#confirm-password").val("");
+                    $("#username").val("");
+                    password = "";
+                    confirm_password = "";
+                });
             });
-          }
-        })
-        .catch(boolean => {
-          console.log("sorry username taken");
-          $("#warning-message").html("sorry! This username is already taken");
-          $("#close-warning-modal").html("Re-enter Username");
-          $("#warning").addClass("is-active");
-          $("#close-warning-modal").click(() => {
-            $("#warning").removeClass("is-active");
-            $("#password").val("");
-            $("#confirm-password").val("");
-            $("#username").val("");
-            password = "";
-            confirm_password = "";
-          });
-        });
     });
+
     $("#create-piece-button").click(function() {
-      $(".model-for-result")[0].style.display = "flex";
-      $(".model-for-result").removeClass("hide");
-      $(".preloader").removeClass("hide");
-      $(this).attr("disabled", "disabled");
-      $("#seed-phrase").attr("disabled", "disabled");
-      $(this).html("Encrypting your key...");
-      var privateKey = $("#seed-phrase").val();
-      let username = $("#username").val();
-      console.log("username", username);
-      // Use this object as events to whatever happens during the process
+        $(".model-for-result")[0].style.display = "flex";
+        $(".model-for-result").removeClass("hide");
+        $(".preloader").removeClass("hide");
+        $(this).attr("disabled", "disabled");
+        $("#seed-phrase").attr("disabled", "disabled");
+        $(this).html("Encrypting your key...");
+        var privateKey = $("#seed-phrase").val();
+        let username = $("#username").val();
+        console.log("username", username);
+        // Use this object as events to whatever happens during the process
 
-      let callingObject = {
-        gettingApproval: function(transactionData, gasInEth, callback) {
-          // for showing prompt for getting Approval
-          console.log("Getting Approval Transaction Data = ", transactionData);
-          let transaction_modal = $(".transaction-modal");
-          let modal_body = transaction_modal
-            .children(".modal-card")
-            .children(".modal-card-body");
+        let callingObject = {
+            gettingApproval: function(transactionData, gasInEth, callback) {
+                // for showing prompt for getting Approval
+                console.log("Getting Approval Transaction Data = ", transactionData);
+                let transaction_modal = $(".transaction-modal");
+                let modal_body = transaction_modal
+                    .children(".modal-card")
+                    .children(".modal-card-body");
 
-          let confirm_transaction = transaction_modal
-            .children(".modal-card")
-            .children(".modal-card-foot")
-            .children(".confirm-transaction");
-          let cancel_transaction = transaction_modal
-            .children(".modal-card")
-            .children(".modal-card-foot")
-            .children(".cancel-transaction");
-          modal_body
-            .children(".from")
-            .children("span")
-            .html(transactionData.from);
+                let confirm_transaction = transaction_modal
+                    .children(".modal-card")
+                    .children(".modal-card-foot")
+                    .children(".confirm-transaction");
+                let cancel_transaction = transaction_modal
+                    .children(".modal-card")
+                    .children(".modal-card-foot")
+                    .children(".cancel-transaction");
+                modal_body
+                    .children(".from")
+                    .children("span")
+                    .html(transactionData.from);
 
-          modal_body
-            .children(".to")
-            .children("span")
-            .html(transactionData.to);
+                modal_body
+                    .children(".to")
+                    .children("span")
+                    .html(transactionData.to);
 
-          modal_body
-            .children(".cost")
-            .children("span")
-            .html(gasInEth);
-          transaction_modal.addClass("is-active");
-          confirm_transaction.click(() => {
-            transaction_modal.removeClass("is-active");
-            callback();
-          });
-          cancel_transaction.click(() => {
-            transaction_modal.removeClass("is-active");
-            $(".model-for-result").addClass("hide");
-            $("#create-piece-button").html("Create Pieces !");
-            $("#create-piece-button").prop("disabled", false);
-          });
+                modal_body
+                    .children(".cost")
+                    .children("span")
+                    .html(gasInEth);
+                transaction_modal.addClass("is-active");
+                confirm_transaction.click(() => {
+                    transaction_modal.removeClass("is-active");
+                    callback();
+                });
+                cancel_transaction.click(() => {
+                    transaction_modal.removeClass("is-active");
+                    $(".model-for-result").addClass("hide");
+                    $("#create-piece-button").html("Create Pieces !");
+                    $("#create-piece-button").prop("disabled", false);
+                });
 
-          // set a prompt here when the user clicks to sign the transaction to be sent
-        },
-        approvalMining: function(hash) {
-          let transaction_link = "https://kovan.etherscan.io/tx/" + hash;
-          console.log("https://kovan.etherscan.io/tx/" + hash);
-          $("#warning-message").html(
-            `Your Transaction is being mined, you can check it on this link <a target='_blank' href='${transaction_link}'>'${transaction_link}'</a>`
-          );
-          $("#close-warning-modal").html("Ok");
-          $("#warning-modal-title").html("Transaction in Progress");
-          $("#close-warning-modal").click(() => {
-            $("#warning").removeClass("is-active");
-          });
+                // set a prompt here when the user clicks to sign the transaction to be sent
+            },
 
-          $("#warning").addClass("is-active");
-        },
-        sendingDai: function(transactionData, gasInEth, callback) {
-          // set a prompt here when the user clicks to sign the transaction to be sent
+            approvalMining: function(hash) {
+                let transaction_link = "https://kovan.etherscan.io/tx/" + hash;
+                console.log("https://kovan.etherscan.io/tx/" + hash);
+                $("#warning-message").html(
+                    `Your Transaction is being mined, you can check it on this link <a target='_blank' href='${transaction_link}'>'${transaction_link}'</a>`
+                );
+                $("#close-warning-modal").html("Ok");
+                $("#warning-modal-title").html("Transaction in Progress");
+                $("#close-warning-modal").click(() => {
+                    $("#warning").removeClass("is-active");
+                });
 
-          let transaction_modal = $(".transaction-modal");
-          let modal_body = transaction_modal
-            .children(".modal-card")
-            .children(".modal-card-body");
-          // let temp_content = modal_body.children(".from").html();
-          let confirm_transaction = transaction_modal
-            .children(".modal-card")
-            .children(".modal-card-foot")
-            .children(".confirm-transaction");
-          let cancel_transaction = transaction_modal
-            .children(".modal-card")
-            .children(".modal-card-foot")
-            .children(".cancel-transaction");
-          modal_body
-            .children(".from")
-            .children("span")
-            .html(transactionData.from);
+                $("#warning").addClass("is-active");
+            },
 
-          modal_body
-            .children(".to")
-            .children("span")
-            .html(transactionData.to);
-          temp_content = modal_body.children(".cost").html();
-          modal_body
-            .children(".cost")
-            .children("span")
-            .html(gasInEth);
-          temp_content = "";
-          temp_content = modal_body.children(".dai").html();
-          modal_body.children(".dai").css("display", "block");
-          modal_body
-            .children(".dai")
-            .children("span")
-            .html((2).toString());
-          transaction_modal.addClass("is-active");
-          confirm_transaction.click(() => {
-            transaction_modal.removeClass("is-active");
-            callback();
-          });
-          cancel_transaction.click(() => {
-            transaction_modal.removeClass("is-active");
-            $(".model-for-result").addClass("hide");
-            $("#create-piece-button").html("Create Pieces !");
-            $("#create-piece-button").prop("disabled", false);
-          });
+            sendingDai: function(transactionData, gasInEth, callback) {
+                // set a prompt here when the user clicks to sign the transaction to be sent
 
-          // callback();
-        },
-        sendingDaiMining: function(hash) {
-          console.log("https://kovan.etherscan.io/tx/" + hash);
-        },
-        insufficientEth: function() {
-          alert("Insufficient Eth");
-        }
-      };
-      splitKey(privateKey, username, callingObject).then(function() {
-        console.log("sending");
-        sendShardsThroughSocket(username, password, privateKey).then(
-          function() {
-            $("#create-piece-button").html("Sending your Key to Users...");
+                let transaction_modal = $(".transaction-modal");
+                let modal_body = transaction_modal
+                    .children(".modal-card")
+                    .children(".modal-card-body");
+                // let temp_content = modal_body.children(".from").html();
+                let confirm_transaction = transaction_modal
+                    .children(".modal-card")
+                    .children(".modal-card-foot")
+                    .children(".confirm-transaction");
+                let cancel_transaction = transaction_modal
+                    .children(".modal-card")
+                    .children(".modal-card-foot")
+                    .children(".cancel-transaction");
+                modal_body
+                    .children(".from")
+                    .children("span")
+                    .html(transactionData.from);
 
-            $("#create-piece-button").html("Completed");
-            $(".wait-request").html(
-              "Your Shares Have Been Distributed Over The Network"
+                modal_body
+                    .children(".to")
+                    .children("span")
+                    .html(transactionData.to);
+                temp_content = modal_body.children(".cost").html();
+                modal_body
+                    .children(".cost")
+                    .children("span")
+                    .html(gasInEth);
+                temp_content = "";
+                temp_content = modal_body.children(".dai").html();
+                modal_body.children(".dai").css("display", "block");
+                modal_body
+                    .children(".dai")
+                    .children("span")
+                    .html((2).toString());
+                transaction_modal.addClass("is-active");
+                confirm_transaction.click(() => {
+                    transaction_modal.removeClass("is-active");
+                    callback();
+                });
+                cancel_transaction.click(() => {
+                    transaction_modal.removeClass("is-active");
+                    $(".model-for-result").addClass("hide");
+                    $("#create-piece-button").html("Create Pieces !");
+                    $("#create-piece-button").prop("disabled", false);
+                });
+
+                // callback();
+            },
+
+            sendingDaiMining: function(hash) {
+                let transaction_link = "https://kovan.etherscan.io/tx/" + hash;
+                console.log("https://kovan.etherscan.io/tx/" + hash);
+                $("#warning-message").html(
+                    `Your Transaction is being mined, you can check it on this link <a target='_blank' href='${transaction_link}'>'${transaction_link}'</a>`
+                );
+                $("#close-warning-modal").html("Ok");
+                $("#warning-modal-title").html("Transaction in Progress");
+                $("#close-warning-modal").click(() => {
+                    $("#warning").removeClass("is-active");
+                });
+
+                $("#warning").addClass("is-active");
+                console.log("https://kovan.etherscan.io/tx/" + hash);
+            },
+
+            insufficientEth: function(requiredEth) {
+                $("#warning-message").html(
+                    `This private key does not hold sufficient Ether to pay the gas cost for Transaction.` +
+                     + `Required Ether = ${requiredEth}`
+                );
+                $("#close-warning-modal").html("Ok");
+                $("#warning-modal-title").html("Insufficient Ether");
+                $("#close-warning-modal").click(() => {
+                    $("#warning").removeClass("is-active");
+                });
+
+                $("#warning").addClass("is-active");
+                console.log("Insufficient Eth");
+            },
+
+            insufficientDai: function () {
+                let requiredDai = 2;
+                $("#warning-message").html(
+                    `This private key does not hold enough Dai to be deposited in the Smart Contract \n` +
+                        `Required DaiStableCoin(ERC20 Token) = ${requiredDai}`
+                );
+                $("#close-warning-modal").html("Ok");
+                $("#warning-modal-title").html("Insufficient Dai Stable Coin");
+                $("#close-warning-modal").click(() => {
+                    $("#warning").removeClass("is-active");
+                });
+
+                $("#warning").addClass("is-active");
+                console.log("Insufficient DaiStableCoin");
+            }
+        };
+        splitKey(privateKey, username, callingObject).then(function() {
+            console.log("sending");
+
+            sendShardsThroughSocket(username, password, privateKey).then(
+                function() {
+                    $("#create-piece-button").html("Sending your Key to Users...");
+
+                    $("#create-piece-button").html("Completed");
+                    $(".wait-request").html(
+                        "Your Shares Have Been Distributed Over The Network"
+                    );
+
+                    $(".preloader").removeClass("hide");
+                }
             );
-
-            $(".preloader").removeClass("hide");
-          }
-        );
-      });
+        });
     });
 
     $("#recover-button").click(function() {
-      let pass = $("#account_recover_password").val();
-      let user = $("#account_recover_name").val();
-      console.log(user, pass);
-      $(".model-for-result")[1].style.display = "flex";
-      $(".preloader").removeClass("hide");
+        let pass = $("#account_recover_password").val();
+        let user = $("#account_recover_name").val();
+        console.log(user, pass);
+        $(".model-for-result")[1].style.display = "flex";
+        $(".preloader").removeClass("hide");
 
-      // Use this object as events to whatever happens during the process
-      let obj = {
-        keysReceived: function() {
-          console.log("Keys Received");
-        },
-        transactionToRetrieveSecuritySent: function(hash) {
-          console.log("https://kovan.etherscan.io/tx/" + hash);
-        },
-        blockMined: function(hash) {
-          console.log("https://kovan.etherscan.io/tx/" + hash);
-        }
-      };
-      requestShardsThroughSocket(user, pass, obj).then(function(seed_phrase) {
-        $(".wait-request").html("Your Private Key <br>" + seed_phrase);
-        $(".preloader").addClass("hide");
-      });
+        // Use this object as events to whatever happens during the process
+        let obj = {
+            keysReceived: function() {
+                // let transaction_link = "https://kovan.etherscan.io/tx/" + hash;
+                // console.log("https://kovan.etherscan.io/tx/" + hash);
+                $("#warning-message").html(
+                    `Your Private Key has been Regenerated.`
+                );
+                $("#close-warning-modal").html("Ok");
+                $("#warning-modal-title").html("Sucess");
+                $("#close-warning-modal").click(() => {
+                    $("#warning").removeClass("is-active");
+                });
+
+                $("#warning").addClass("is-active");
+                console.log("Keys Received");
+            },
+
+            transactionToRetrieveSecuritySent: function(hash) {
+                let transaction_link = "https://kovan.etherscan.io/tx/" + hash;
+                console.log("https://kovan.etherscan.io/tx/" + hash);
+                $("#warning-message").html(
+                    `Your Transaction for retrieving the Security Deposit is being mined, you can check it on this link <a target='_blank' href='${transaction_link}'>'${transaction_link}'</a>`
+                );
+                $("#close-warning-modal").html("Ok");
+                $("#warning-modal-title").html("Transaction in Progress");
+                $("#close-warning-modal").click(() => {
+                    $("#warning").removeClass("is-active");
+                });
+
+                $("#warning").addClass("is-active");
+                console.log("https://kovan.etherscan.io/tx/" + hash);
+            },
+
+            blockMined: function(hash) {
+                let transaction_link = "https://kovan.etherscan.io/tx/" + hash;
+                console.log("https://kovan.etherscan.io/tx/" + hash);
+                $("#warning-message").html(
+                    `Your Transaction has been mined.'</a>`
+                );
+                $("#close-warning-modal").html("Ok");
+                $("#warning-modal-title").html("Transaction Successful");
+                $("#close-warning-modal").click(() => {
+                    $("#warning").removeClass("is-active");
+                });
+
+                $("#warning").addClass("is-active");
+                console.log("https://kovan.etherscan.io/tx/" + hash);
+            }
+        };
+        requestShardsThroughSocket(user, pass, obj).then(function(seed_phrase) {
+            $(".wait-request").html("Your Private Key <br>" + seed_phrase);
+            $(".preloader").addClass("hide");
+        });
     });
-  </script>
+</script>
 
-  <style media="screen">
-    html,
+<style media="screen">
+  html,
+  body {
+    min-height: 100vh;
+    height: auto;
+    font-family: "Josefin Sans", sans-serif;
+  }
+
+  .title {
+    font-weight: bold;
+    font-size: 2.5em;
+  }
+
+  .subtitle {
+    font-size: 1.8em;
+    font-weight: bold;
+  }
+
+  .hide {
+    display: none !important;
+  }
+
+  .card-container-column {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .card-container-column .level {
+    width: 25vw;
+    height: 35vw;
+    border-radius: 4px;
+    background: #8de5d1;
+    box-sizing: border-box;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin: 0px;
+  }
+
+  .is-warning {
+    color: red !important;
+  }
+  .card-container-column .level .description-level-item {
+    font-size: 1.3em;
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .card-container-column .level .level-item {
+    flex-grow: 0;
+  }
+
+  .recover-card {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .card-container-column .main-paperless-level {
+    width: 30vw;
+    height: 40vw;
+    background-color: #2cd8bc;
+    font-size: 1em;
+  }
+
+  .recover-your-key,
+  .custom-account,
+  .custom-account-become-a-part {
+    display: none;
+    padding: 20px;
+    margin: 10px;
+  }
+
+  .recover-your-key h1 {
+    font-size: 1.5em;
+  }
+
+  .custom-account-become-a-part hr {
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+
+  .recover-your-key hr {
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+
+  .recover-your-key label {
+    margin-top: 5px;
+  }
+
+  #recover-button {
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #00d1b2;
+    border: 1px solid #00d1b2;
+    color: white;
+    font-size: 1em;
+  }
+
+  .modal-card hr {
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+
+  @media only screen and (max-width: 800px) {
     body {
-      min-height: 100vh;
+    }
+    .card-container-column {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .card-container-column .level {
+      margin-top: 20px;
+      width: 75vw;
       height: auto;
-      font-family: "Josefin Sans", sans-serif;
-    }
-
-    .title {
-      font-weight: bold;
-      font-size: 2.5em;
-    }
-
-    .subtitle {
-      font-size: 1.8em;
-      font-weight: bold;
-    }
-
-    .hide {
-      display: none !important;
     }
 
     .card-container-column {
-      padding-top: 30px;
-      padding-bottom: 30px;
-      display: flex;
-      justify-content: space-around;
       align-items: center;
-    }
-    .card-container-column .level {
-      width: 25vw;
-      height: 35vw;
-      border-radius: 4px;
-      background: #8de5d1;
-      box-sizing: border-box;
-      padding: 1em;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      margin: 0px;
-    }
-
-    .is-warning {
-      color: red !important;
-    }
-    .card-container-column .level .description-level-item {
-      font-size: 1.3em;
-      color: white;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .card-container-column .level .level-item {
-      flex-grow: 0;
-    }
-
-    .recover-card {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-    }
-
-    .card-container-column .main-paperless-level {
-      width: 30vw;
-      height: 40vw;
-      background-color: #2cd8bc;
-      font-size: 1em;
-    }
-
-    .recover-your-key,
-    .custom-account,
-    .custom-account-become-a-part {
-      display: none;
-      padding: 20px;
-      margin: 10px;
-    }
-
-    .recover-your-key h1 {
-      font-size: 1.5em;
-    }
-
-    .custom-account-become-a-part hr {
-      margin-top: 2px;
-      margin-bottom: 2px;
-    }
-
-    .recover-your-key hr {
-      margin-top: 2px;
-      margin-bottom: 2px;
-    }
-
-    .recover-your-key label {
-      margin-top: 5px;
-    }
-
-    #recover-button {
-      padding: 10px;
-      border-radius: 4px;
-      background-color: #00d1b2;
-      border: 1px solid #00d1b2;
-      color: white;
-      font-size: 1em;
-    }
-
-    .modal-card hr {
-      margin-top: 2px;
-      margin-bottom: 2px;
-    }
-
-    @media only screen and (max-width: 800px) {
-      body {
-      }
-      .card-container-column {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .card-container-column .level {
-        margin-top: 20px;
-        width: 75vw;
-        height: auto;
-      }
-
-      .card-container-column {
-        align-items: center;
-      }
-
-      .beta {
-        right: 155px;
-      }
-    }
-
-    .model-for-result {
-      display: none;
-      position: absolute;
-      z-index: 1;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      text-align: center;
-      font-size: 2em;
-
-      justify-content: space-around;
-      align-items: center;
-
-      color: white;
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 20px;
-    }
-
-    .model-for-result .preloader {
-      top: 65%;
-    }
-
-    .fa-keycdn,
-    .fa-user-lock,
-    .fa-connectdevelop {
-      font-size: 3em !important;
-      color: rgba(49, 103, 113, 0.44) !important ;
-    }
-
-    .level-title-main-title {
-      position: relative;
     }
 
     .beta {
-      font-family: monospace !important;
-      font-size: 0.3em;
-      margin: 8px;
-      border: 1px solid inherit;
-      background-color: rgba(0, 146, 141, 0.48);
-      padding: 3px;
-      border-radius: 4px;
-      position: absolute;
-      bottom: 15px;
-      right: 407px;
+      right: 155px;
     }
-  </style>
+  }
+
+  .model-for-result {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 2em;
+
+    justify-content: space-around;
+    align-items: center;
+
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+  }
+
+  .model-for-result .preloader {
+    top: 65%;
+  }
+
+  .fa-keycdn,
+  .fa-user-lock,
+  .fa-connectdevelop {
+    font-size: 3em !important;
+    color: rgba(49, 103, 113, 0.44) !important ;
+  }
+
+  .level-title-main-title {
+    position: relative;
+  }
+
+  .beta {
+    font-family: monospace !important;
+    font-size: 0.3em;
+    margin: 8px;
+    border: 1px solid inherit;
+    background-color: rgba(0, 146, 141, 0.48);
+    padding: 3px;
+    border-radius: 4px;
+    position: absolute;
+    bottom: 15px;
+    right: 407px;
+  }
+</style>
 </html>

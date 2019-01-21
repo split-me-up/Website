@@ -504,6 +504,8 @@ const DaiToBeSent = 2;
 const APPROVAL = "999999999999999999999999999999";
 console.log(contract);
 
+
+
 /* Function to fetch Dai Balance for a certain Address
    @Param address {string}
    Returns {number} (Dai Balance) Wrapped in a Promise */
@@ -520,6 +522,8 @@ function getDaiBalance(address) {
       });
   });
 }
+
+
 
 /*
     Function checks if a certain address has provided allowance to the
@@ -546,6 +550,8 @@ function checkApproval(address) {
   });
 }
 
+
+
 /*
     Function checks if a certain username is used or not
     @Param username {string}
@@ -565,6 +571,8 @@ function checkUsernameAvailability(username) {
       });
   });
 }
+
+
 
 /*
     Function gets allowance for a certain address from the Dai Contract
@@ -626,12 +634,14 @@ function getApproved(privateKey, address, callingFunctions) {
                 });
             });
           } else {
-            callingFunctions.insufficientEth();
+            callingFunctions.insufficientEth(web3.utils.fromWei(requiredEth.toString()));
           }
         });
       });
   });
 }
+
+
 
 /*
     Function to make a transaction to the SplitMeUp smart contract to store
@@ -691,7 +701,7 @@ function depositSecurity(username, privateKey, address, callingFunctions) {
                 });
             });
           } else {
-            callingFunctions.insufficientEth();
+            callingFunctions.insufficientEth(web3.utils.fromWei(requiredEth.toString()));
           }
         });
       });
@@ -755,7 +765,7 @@ function privateKeyRegeneratedTransaction(
                 reject(err);
               });
           } else {
-            callingFunctions.insufficientEth();
+            callingFunctions.insufficientEth(web3.utils.fromWei(requiredEth.toString()));
           }
         });
       });
@@ -807,7 +817,8 @@ function splitKey(privateKey, username, callingFunctions) {
           }
         });
       } else {
-        console.log("Insufficient Dai Balance in Your Account");
+        console.log("Insufficient Dai");
+        callingFunctions.insufficientDai();
       }
     });
   });
