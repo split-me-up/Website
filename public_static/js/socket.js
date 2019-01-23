@@ -1,32 +1,59 @@
 let socket = io();
 let NUMBER_OF_HOLDERS = 2;
 
-function getRandomNumber() {
-    let rand = Math.random();
-    let r = Math.floor(rand * count - 1) + 1;
-    return r;
+
+function getRandom(arr) {
+    let n = NUMBER_OF_HOLDERS;
+    let result = new Array(n),
+        len = arr.length,
+        taken = new Array(len);
+    if (n > len)
+        throw new RangeError("getRandom: more elements taken than available");
+    while (n--) {
+        var x = Math.floor(Math.random() * len);
+        result[n] = arr[x in taken ? taken[x] : x];
+        taken[x] = --len in taken ? taken[len] : len;
+    }
+    return result;
 }
+
 
 function selectUsersFromPassword(password, count) {
     return new Promise(function (resolve, reject) {
-        let arr = [];
-        let initialRand  = getRandomNumber();
-        socket.emit("check user validity", initialRand);
 
-        socket.on("user validity", function (object) {
-           if(object.bool){
-               console.log("Index Selected", object.index);
-               arr.push(object.index);
-               if(arr.length !== NUMBER_OF_HOLDERS){
-                   let nextRand = getRandomNumber();
-                   if(arr.indexOf(nextRand) === -1){
-                       socket.emit("check user validity", nextRand);
-                   }
-               }else {
-                   resolve(arr);
-               }
-           }
+        socket.emit("valid user list");
+        socket.on('valid users', function (array) {
+            let arrSelected = getRandom(array);
+            console.log('arrSelected' ,arrSelected)
+            resolve(arrSelected);
         });
+
+        // let arr = [];
+        // let initialRand  = getRandomNumber();
+        // socket.emit("check user validity", initialRand);
+        //
+        // socket.on("user validity", function (object) {
+        //    if(object.bool){
+        //        console.log("Index Selected", object.index);
+        //        arr.push(object.index);
+        //        if(arr.length !== NUMBER_OF_HOLDERS){
+        //            let nextRand;
+        //            while(nextRand != null){
+        //                nextRand = getRandomNumber();
+        //            }
+        //            if(arr.indexOf(nextRand) === -1){
+        //                socket.emit("check user validity", nextRand);
+        //            }
+        //        }else {
+        //            resolve(arr);
+        //        }
+        //    }else{
+        //        let nextRand = getRandomNumber();
+        //        if(arr.indexOf(nextRand) === -1){
+        //            socket.emit("check user validity", nextRand);
+        //        }
+        //    }
+        // });
     });
 }
 

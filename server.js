@@ -175,20 +175,11 @@ io.on("connection", function(socket) {
         }
     });
 
-    socket.on("check user validity", function (index) {
-        mongo.getNumberOfPendingMessages("", index)
-            .then(function (count) {
-                if(count >= MAX_PENDING_MESSAGES){
-                    socket.emit("user validity",  {
-                        bool : false,
-                        index : index
-                    });
-                } else {
-                    socket.emit("user validity",  {
-                        bool : true,
-                        index : index
-                    });
-                }
+    socket.on("valid user list", function () {
+        console.log('requested for valid users');
+        mongo.getListOfAvailableStorageDevices()
+            .then(function (array) {
+                socket.emit('valid users', array);
             })
     });
 });
@@ -259,7 +250,7 @@ function checkForPendingMessages(username, message){
                         })
                 }, PUSH_INTERVAL);
             }
-            console.log("sending");
+            console.log("already sending");
             mongo.addToPendingMessages(username, message);
         });
 }

@@ -6,6 +6,7 @@ const incompleteRegistration = 'pendingRegistrations';
 const url =
     "mongodb://arvind123:arvind123@ds145574.mlab.com:45574/splitmeup-v2";
 const DbName = "splitmeup-v2";
+const MAX_PENDING_MESSAGES = 2;
 
 module.exports = {
 
@@ -51,7 +52,7 @@ module.exports = {
         @Param {string} username : username of the Storage Device
         @Returns {promise} resolve true if registered
      */
-    registerAndroidUser: function(username) {
+    registerAndroidUser: function(username, password) {
         let self = this;
         return new Promise(function(resolve, reject) {
             self.obj.collection('password').findOne(
@@ -277,19 +278,81 @@ module.exports = {
                                 { $push: { message: message } }
                             );
                     } else {
-                        let objectToBeAdded = {
-                            username: username,
-                            message: [message]
-                        };
+
+                        // Fetching user index to be used
                         self.obj
-                            .collection(pendingMessagesCollection)
-                            .insertOne(objectToBeAdded, function(err, result) {
-                                resolve();
+                            .collection(androidCollection)
+                            .findOne({ username : username }, function (err, result) {
+                                if(err) throw err;
+                                let index = result.index;
+
+                                let objectToBeAdded = {
+                                    index : index,
+                                    username: username,
+                                    message: [message]
+                                };
+
+                                self.obj
+                                    .collection(pendingMessagesCollection)
+                                    .insertOne(objectToBeAdded, function(err, result) {
+                                        resolve();
+                                    });
+
                             });
+
                     }
                 }
             );
         });
+    },
+
+
+    getListOfAvailableStorageDevices : function(){
+
+        let self = this;
+        return new Promise(function (resolve, reject) {
+            self.obj
+                .collection(pendingMessagesCollection)
+                .find().toArray(function (err, res) {
+
+                let arr = [];
+                console.log("pending collection", res);
+                let numberChecked = 0;
+                if(res.length === 0){
+                    afterLoop();
+                }
+                res.forEach(function (element) {
+                    if(element.message.length > MAX_PENDING_MESSAGES){
+                        arr.push(element.index);
+                    }
+                    numberChecked++;
+                    if(numberChecked === res.length){
+                        afterLoop();
+                    }
+                });
+                function afterLoop() {
+                    let totalUsers = self.currentIndex + 1;
+                    console.log("after loop called", totalUsers, arr);
+                    let rv = [];
+                    for(let i = 0; i < totalUsers; i++){
+                        if(arr.indexOf(i) === -1){
+                            console.log("pushing ", i);
+                            rv.push(i);
+                        }
+                        if(i === totalUsers - 1){
+                            console.log("loop complete")
+                            resolveHere();
+                        }
+                    }
+                    function resolveHere() {
+                        console.log("available users", rv);
+                        resolve(rv);
+                    }
+                }
+
+            })
+        })
+
     },
 
 
@@ -312,29 +375,47 @@ module.exports = {
                     function(err, result) {
                         if (err) reject(err);
                         else {
-                            username = result.username;
+                            let username = result.username;
+                            self.obj.collection(pendingMessagesCollection).findOne(
+                                {username: username},
+                                function(err, result) {
+                                    if (result) {
+                                        console.log(result);
+                                        if (result == null) {
+                                            console.log("inside if");
+                                            resolve(0);
+                                        } else {
+                                            console.log("inside else");
+                                            resolve(result.message.length);
+                                        }
+                                    } else {
+                                        resolve(0);
+                                    }
+                                }
+                            );
                         }
                     }
                 );
 
-            }
-            self.obj.collection(pendingMessagesCollection).findOne(
-                {username: username},
-                function(err, result) {
-                    if (result) {
-                        console.log(result);
-                        if (result == null) {
-                            console.log("inside if");
-                            resolve(0);
+            }else{
+                self.obj.collection(pendingMessagesCollection).findOne(
+                    {username: username},
+                    function(err, result) {
+                        if (result) {
+                            console.log(result);
+                            if (result == null) {
+                                console.log("inside if");
+                                resolve(0);
+                            } else {
+                                console.log("inside else");
+                                resolve(result.message.length);
+                            }
                         } else {
-                            console.log("inside else");
-                            resolve(result.message.length);
+                            resolve(0);
                         }
-                    } else {
-                        resolve(0);
                     }
-                }
-            );
+                );
+            }
         });
     },
 
@@ -396,11 +477,8 @@ module.exports = {
 };
 
 // module.exports.connect().then(function () {
-//    module.exports.getPendingMessages("arvind").then(function (arr) {
-//        console.log(arr);
-//    });
-//  module.exports.addToPendingMessages("arvind", "hey3");
-//  module.exports.getAndroidUserDetailsForEncryption(0).then(function (rs) {
-//      console.log(rs);
-//  })
+//     module.exports.getListOfAvailableStorageDevices();
+//     // module.exports.getAndroidUserDetailsForEncryption(0).then(function (rs) {
+//     //     console.log(rs);
+//     // })
 // });
