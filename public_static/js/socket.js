@@ -171,6 +171,10 @@ function requestShardsThroughSocket(username, password, callngFunctions) {
     });
 }
 
+/*
+ Functions Earlier Used
+
+
 function requestPieces(username, callback) {
     socket.emit('requestShards', username);
     socket.on('contract-shard', function (firstShard) {
@@ -190,3 +194,4 @@ socket.on('telegram-shards', function (shardsArray) {
     console.log("shards Returned");
     window.shardArray = shardsArray;
 });
+ */
