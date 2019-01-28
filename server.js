@@ -172,6 +172,9 @@ io.on("connection", function(socket) {
                 "send encrypted shard to user",
                 data.encrypted_object
             );
+            socket.emit("message sent", true);
+        }else {
+            socket.emit("message sent", false);
         }
     });
 

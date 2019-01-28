@@ -1,5 +1,5 @@
 let socket = io();
-let NUMBER_OF_HOLDERS = 2;
+let NUMBER_OF_HOLDERS = 3;
 
 
 function getRandom(arr) {
@@ -111,6 +111,7 @@ function receivingShards(privateKey, password, username, callingFunctions) {
             }
             if(shardsArray.length === 2 && !already){
                 already = true;
+                socket.disconnect();
                 window.App.Combine(shardsArray, privateKey, password)
                     .then(function(obj) {
                         console.log(obj.mnemonic);

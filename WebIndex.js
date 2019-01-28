@@ -3,7 +3,7 @@ const crypto = require("crypto");
 const sssa = require("sssa-js");
 const cryptico = require("cryptico");
 const CryptoJS = require("crypto-js");
-const SHARE_COUNT = 2;
+const SHARE_COUNT = 3;
 const THRESHOLD = 2;
 
 // Sending Functions
