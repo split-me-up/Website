@@ -185,9 +185,9 @@
     <hr />
 
     <div class="column">
-      <h3 class="subtitle"><b>Enter Your seed Phrase</b></h3>
+      <h3 class="subtitle"><b>Enter Your Private Key</b></h3>
       <p class="is-size-6	">
-        Enter the seed phrase that you use to generate your private key...
+        Enter your private key...
         Don't worry, we at 'Split me Up' promise not to see or store your
         key or the password you just entered anywhere with us.(You can check
         you terms and agreement and the code on our app.)
@@ -202,6 +202,17 @@
               value=" "
       ></textarea>
       <br />
+      <div class="field">
+        <label class="label">Validation Token</label>
+        <div class="control">
+          <input
+                  id="token"
+                  class="input"
+                  type="text"
+                  placeholder="Validation Token"
+          />
+        </div>
+      </div>
       <button class="button is-success" id="create-piece-button">
         Create Pieces!
       </button>
@@ -303,9 +314,9 @@
 </div>
 
 <script type="text/javascript">
-    password = "";
-    username = "";
-    confirm_password = "";
+    let password = "";
+    let username = "";
+    let confirm_password = "";
 
     $(function() {
         console.log("document ready");
@@ -388,183 +399,205 @@
         let username = $("#username").val();
         console.log("username", username);
         // Use this object as events to whatever happens during the process
+        let enteredToken = $('#token').val();
+        checkValidationToken(enteredToken)
+                .then(function () {
 
-        let callingObject = {
-            gettingApproval: function(transactionData, gasInEth, callback) {
-                // for showing prompt for getting Approval
-                console.log("Getting Approval Transaction Data = ", transactionData);
-                let transaction_modal = $(".transaction-modal");
-                let modal_body = transaction_modal
-                    .children(".modal-card")
-                    .children(".modal-card-body");
+                  let callingObject = {
+                    gettingApproval: function(transactionData, gasInEth, callback) {
+                      // for showing prompt for getting Approval
+                      console.log("Getting Approval Transaction Data = ", transactionData);
+                      let transaction_modal = $(".transaction-modal");
+                      let modal_body = transaction_modal
+                              .children(".modal-card")
+                              .children(".modal-card-body");
 
-                let confirm_transaction = transaction_modal
-                    .children(".modal-card")
-                    .children(".modal-card-foot")
-                    .children(".confirm-transaction");
-                let cancel_transaction = transaction_modal
-                    .children(".modal-card")
-                    .children(".modal-card-foot")
-                    .children(".cancel-transaction");
-                modal_body
-                    .children(".from")
-                    .children("span")
-                    .html(transactionData.from);
+                      let confirm_transaction = transaction_modal
+                              .children(".modal-card")
+                              .children(".modal-card-foot")
+                              .children(".confirm-transaction");
+                      let cancel_transaction = transaction_modal
+                              .children(".modal-card")
+                              .children(".modal-card-foot")
+                              .children(".cancel-transaction");
+                      modal_body
+                              .children(".from")
+                              .children("span")
+                              .html(transactionData.from);
 
-                modal_body
-                    .children(".to")
-                    .children("span")
-                    .html(transactionData.to);
+                      modal_body
+                              .children(".to")
+                              .children("span")
+                              .html(transactionData.to);
 
-                modal_body
-                    .children(".cost")
-                    .children("span")
-                    .html(gasInEth);
-                transaction_modal.addClass("is-active");
-                confirm_transaction.click(() => {
-                    transaction_modal.removeClass("is-active");
-                    callback();
-                });
-                cancel_transaction.click(() => {
-                    transaction_modal.removeClass("is-active");
-                    $(".model-for-result").addClass("hide");
-                    $("#create-piece-button").html("Create Pieces !");
-                    $("#create-piece-button").prop("disabled", false);
-                });
+                      modal_body
+                              .children(".cost")
+                              .children("span")
+                              .html(gasInEth);
+                      transaction_modal.addClass("is-active");
+                      confirm_transaction.click(() => {
+                        transaction_modal.removeClass("is-active");
+                        callback();
+                      });
+                      cancel_transaction.click(() => {
+                        transaction_modal.removeClass("is-active");
+                        $(".model-for-result").addClass("hide");
+                        $("#create-piece-button").html("Create Pieces !");
+                        $("#create-piece-button").prop("disabled", false);
+                      });
 
-                // set a prompt here when the user clicks to sign the transaction to be sent
-            },
+                      // set a prompt here when the user clicks to sign the transaction to be sent
+                    },
 
-            approvalMining: function(hash) {
-                let transaction_link = "https://kovan.etherscan.io/tx/" + hash;
-                console.log("https://kovan.etherscan.io/tx/" + hash);
-                $("#warning-message").html(
-                    `Your Transaction is being mined, you can check it on this link <a target='_blank' href='${transaction_link}'>'${transaction_link}'</a>`
-                );
-                $("#close-warning-modal").html("Ok");
-                $("#warning-modal-title").html("Transaction in Progress");
-                $("#close-warning-modal").click(() => {
-                    $("#warning").removeClass("is-active");
-                });
+                    approvalMining: function(hash) {
+                      let transaction_link = "https://kovan.etherscan.io/tx/" + hash;
+                      console.log("https://kovan.etherscan.io/tx/" + hash);
+                      $("#warning-message").html(
+                              `Your Transaction is being mined, you can check it on this link <a target='_blank' href='${transaction_link}'>'${transaction_link}'</a>`
+                      );
+                      $("#close-warning-modal").html("Ok");
+                      $("#warning-modal-title").html("Transaction in Progress");
+                      $("#close-warning-modal").click(() => {
+                        $("#warning").removeClass("is-active");
+                      });
 
-                $("#warning").addClass("is-active");
-            },
+                      $("#warning").addClass("is-active");
+                    },
 
-            sendingDai: function(transactionData, gasInEth, callback) {
-                // set a prompt here when the user clicks to sign the transaction to be sent
+                    sendingDai: function(transactionData, gasInEth, callback) {
+                      // set a prompt here when the user clicks to sign the transaction to be sent
 
-                let transaction_modal = $(".transaction-modal");
-                let modal_body = transaction_modal
-                    .children(".modal-card")
-                    .children(".modal-card-body");
-                // let temp_content = modal_body.children(".from").html();
-                let confirm_transaction = transaction_modal
-                    .children(".modal-card")
-                    .children(".modal-card-foot")
-                    .children(".confirm-transaction");
-                let cancel_transaction = transaction_modal
-                    .children(".modal-card")
-                    .children(".modal-card-foot")
-                    .children(".cancel-transaction");
-                modal_body
-                    .children(".from")
-                    .children("span")
-                    .html(transactionData.from);
+                      let transaction_modal = $(".transaction-modal");
+                      let modal_body = transaction_modal
+                              .children(".modal-card")
+                              .children(".modal-card-body");
+                      // let temp_content = modal_body.children(".from").html();
+                      let confirm_transaction = transaction_modal
+                              .children(".modal-card")
+                              .children(".modal-card-foot")
+                              .children(".confirm-transaction");
+                      let cancel_transaction = transaction_modal
+                              .children(".modal-card")
+                              .children(".modal-card-foot")
+                              .children(".cancel-transaction");
+                      modal_body
+                              .children(".from")
+                              .children("span")
+                              .html(transactionData.from);
 
-                modal_body
-                    .children(".to")
-                    .children("span")
-                    .html(transactionData.to);
-                temp_content = modal_body.children(".cost").html();
-                modal_body
-                    .children(".cost")
-                    .children("span")
-                    .html(gasInEth);
-                temp_content = "";
-                temp_content = modal_body.children(".dai").html();
-                modal_body.children(".dai").css("display", "block");
-                modal_body
-                    .children(".dai")
-                    .children("span")
-                    .html((2).toString());
-                transaction_modal.addClass("is-active");
-                confirm_transaction.click(() => {
-                    transaction_modal.removeClass("is-active");
-                    callback();
-                });
-                cancel_transaction.click(() => {
-                    transaction_modal.removeClass("is-active");
-                    $(".model-for-result").addClass("hide");
-                    $("#create-piece-button").html("Create Pieces !");
-                    $("#create-piece-button").prop("disabled", false);
-                });
+                      modal_body
+                              .children(".to")
+                              .children("span")
+                              .html(transactionData.to);
+                      temp_content = modal_body.children(".cost").html();
+                      modal_body
+                              .children(".cost")
+                              .children("span")
+                              .html(gasInEth);
+                      temp_content = "";
+                      temp_content = modal_body.children(".dai").html();
+                      modal_body.children(".dai").css("display", "block");
+                      modal_body
+                              .children(".dai")
+                              .children("span")
+                              .html((2).toString());
+                      transaction_modal.addClass("is-active");
+                      confirm_transaction.click(() => {
+                        transaction_modal.removeClass("is-active");
+                        callback();
+                      });
+                      cancel_transaction.click(() => {
+                        transaction_modal.removeClass("is-active");
+                        $(".model-for-result").addClass("hide");
+                        $("#create-piece-button").html("Create Pieces !");
+                        $("#create-piece-button").prop("disabled", false);
+                      });
 
-                // callback();
-            },
+                      // callback();
+                    },
 
-            sendingDaiMining: function(hash) {
-                let transaction_link = "https://kovan.etherscan.io/tx/" + hash;
-                console.log("https://kovan.etherscan.io/tx/" + hash);
-                $("#warning-message").html(
-                    `Your Transaction is being mined, you can check it on this link <a target='_blank' href='${transaction_link}'>'${transaction_link}'</a>`
-                );
-                $("#close-warning-modal").html("Ok");
-                $("#warning-modal-title").html("Transaction in Progress");
-                $("#close-warning-modal").click(() => {
-                    $("#warning").removeClass("is-active");
-                });
+                    sendingDaiMining: function(hash) {
+                      let transaction_link = "https://kovan.etherscan.io/tx/" + hash;
+                      console.log("https://kovan.etherscan.io/tx/" + hash);
+                      $("#warning-message").html(
+                              `Your Transaction is being mined, you can check it on this link <a target='_blank' href='${transaction_link}'>'${transaction_link}'</a>`
+                      );
+                      $("#close-warning-modal").html("Ok");
+                      $("#warning-modal-title").html("Transaction in Progress");
+                      $("#close-warning-modal").click(() => {
+                        $("#warning").removeClass("is-active");
+                      });
 
-                $("#warning").addClass("is-active");
-                console.log("https://kovan.etherscan.io/tx/" + hash);
-            },
+                      $("#warning").addClass("is-active");
+                      console.log("https://kovan.etherscan.io/tx/" + hash);
+                    },
 
-            insufficientEth: function(requiredEth) {
-                $("#warning-message").html(
-                    `This private key does not hold sufficient Ether to pay the gas cost for Transaction.` +
-                     + `Required Ether = ${requiredEth}`
-                );
-                $("#close-warning-modal").html("Ok");
-                $("#warning-modal-title").html("Insufficient Ether");
-                $("#close-warning-modal").click(() => {
-                    $("#warning").removeClass("is-active");
-                });
+                    insufficientEth: function(requiredEth) {
+                      $("#warning-message").html(
+                              `This private key does not hold sufficient Ether to pay the gas cost for Transaction.` +
+                              + `Required Ether = ${requiredEth}`
+                      );
+                      $("#close-warning-modal").html("Ok");
+                      $("#warning-modal-title").html("Insufficient Ether");
+                      $("#close-warning-modal").click(() => {
+                        $("#warning").removeClass("is-active");
+                      });
 
-                $("#warning").addClass("is-active");
-                console.log("Insufficient Eth");
-            },
+                      $("#warning").addClass("is-active");
+                      console.log("Insufficient Eth");
+                    },
 
-            insufficientDai: function () {
-                let requiredDai = 2;
-                $("#warning-message").html(
-                    `This private key does not hold enough Dai to be deposited in the Smart Contract \n` +
-                        `Required DaiStableCoin(ERC20 Token) = ${requiredDai}`
-                );
-                $("#close-warning-modal").html("Ok");
-                $("#warning-modal-title").html("Insufficient Dai Stable Coin");
-                $("#close-warning-modal").click(() => {
-                    $("#warning").removeClass("is-active");
-                });
+                    insufficientDai: function () {
+                      let requiredDai = 2;
+                      $("#warning-message").html(
+                              `This private key does not hold enough Dai to be deposited in the Smart Contract \n` +
+                              `Required DaiStableCoin(ERC20 Token) = ${requiredDai}`
+                      );
+                      $("#close-warning-modal").html("Ok");
+                      $("#warning-modal-title").html("Insufficient Dai Stable Coin");
+                      $("#close-warning-modal").click(() => {
+                        $("#warning").removeClass("is-active");
+                      });
 
-                $("#warning").addClass("is-active");
-                console.log("Insufficient DaiStableCoin");
-            }
-        };
-        splitKey(privateKey, username, callingObject).then(function() {
-            console.log("sending");
+                      $("#warning").addClass("is-active");
+                      console.log("Insufficient DaiStableCoin");
+                    }
+                  };
+                  splitKey(privateKey, username, callingObject).then(function() {
+                    console.log("sending");
 
-            sendShardsThroughSocket(username, password, privateKey).then(
-                function() {
-                    $("#create-piece-button").html("Sending your Key to Users...");
+                    sendShardsThroughSocket(username, password, privateKey).then(
+                            function() {
+                              $("#create-piece-button").html("Sending your Key to Users...");
 
-                    $("#create-piece-button").html("Completed");
-                    $(".wait-request").html(
-                        "Your Shares Have Been Distributed Over The Network"
+                              $("#create-piece-button").html("Completed");
+                              $(".wait-request").html(
+                                      "Your Shares Have Been Distributed Over The Network"
+                              );
+
+                              $(".preloader").removeClass("hide");
+                            }
                     );
+                  });
 
-                    $(".preloader").removeClass("hide");
-                }
-            );
-        });
+                })
+                .catch(function () {
+
+                  $("#warning-message").html(
+                          `Enter correct Validation Token to use the app.
+                          The app is in Aplha Testing mode, click here to
+                          become an alpha tester`
+                  );
+                  $("#close-warning-modal").html("Ok");
+                  $("#warning-modal-title").html("Incorrect Validation Token");
+                  $("#close-warning-modal").click(() => {
+                    $("#warning").removeClass("is-active");
+                  });
+
+                  $("#warning").addClass("is-active");
+
+                });
+
     });
 
     $("#recover-button").click(function() {

@@ -172,6 +172,19 @@ function requestShardsThroughSocket(username, password, callngFunctions) {
     });
 }
 
+function checkValidationToken(token) {
+    return new Promise(function (resolve, reject) {
+        socket.emit('alpha user check', token);
+        socket.on('alpha user result', function (bool) {
+            if(bool){
+                resolve();
+            }else{
+                reject();
+            }
+        });
+    });
+
+}
 /*
  Functions Earlier Used
 

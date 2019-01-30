@@ -6,6 +6,7 @@ const io = require('socket.io').listen(server);
 const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
 const serviceAccount = require('./serviceAccountKey.json');
+const tokens = require('./tokens.json');
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -185,16 +186,33 @@ io.on("connection", function(socket) {
                 socket.emit('valid users', array);
             })
     });
+    
+    socket.on('alpha user check', function (tokenEntered) {
+        let idx = tokens.findIndex(ele => {
+            return ele === tokenEntered
+        });
+        if(idx === -1){
+            socket.emit('alpha user result', false);
+        } else {
+            socket.emit('alpha user result', true);
+        }
+    });
 });
 
 // called from the android device whenever it is opened to get the latest list of pending messages
 app.post("/latestMessages", function(req, res) {
+    console.log('/latestMessages called');
     let username = req.body.username;
+    let rv = {
+        doesExist : false,
+        array : []
+    };
     console.log("Latest Messages Requested by", username);
     getPendingMessages(username).then(function(arrayToBeReturned) {
         console.log(arrayToBeReturned);
         res.send(arrayToBeReturned);
     });
+
 });
 
 app.post("/updateToken", function (req, res) {
